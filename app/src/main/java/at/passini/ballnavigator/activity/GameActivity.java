@@ -3,7 +3,7 @@ package at.passini.ballnavigator.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import at.passini.ballnavigator.GameView;
+import at.passini.ballnavigator.game.GameView;
 
 /**
  * Created by Benedikt on 27.01.2018.
