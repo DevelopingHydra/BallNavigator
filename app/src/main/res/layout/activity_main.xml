@@ -41,7 +41,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@color/colorRed"
-
+        android:drawableLeft="@drawable/shop_icon"
+        android:padding="16dp"
         android:text="Shop"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -53,7 +54,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@color/colorLightBlue"
-
+        android:drawableLeft="@drawable/star_icon"
+        android:padding="16dp"
 
         android:text="Achievements"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -63,8 +65,8 @@
 
     <ImageButton
         android:id="@+id/btnOpenHelp"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
 
@@ -75,8 +77,8 @@
 
     <ImageButton
         android:id="@+id/btnOpenSetting"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="8dp"
 
