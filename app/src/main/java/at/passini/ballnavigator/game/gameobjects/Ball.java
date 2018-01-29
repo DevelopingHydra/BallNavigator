@@ -23,13 +23,12 @@ public class Ball extends GameObject {
         this.moveTo(posX, posY);
 
         pColor = new Paint();
-        pColor.setColor(Color.WHITE);
+        pColor.setColor(Color.DKGRAY);
         pColor.setStyle(Paint.Style.FILL);
     }
 
     @Override
     public void onDrawUpdate(Canvas canvas, long timePassed) {
-        super.onDrawUpdate(canvas, timePassed);
         canvas.drawOval(this.rBox.left, this.rBox.top, this.rBox.right, this.rBox.bottom, this.pColor);
     }
 

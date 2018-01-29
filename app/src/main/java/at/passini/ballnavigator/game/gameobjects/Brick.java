@@ -6,10 +6,10 @@ import android.graphics.Canvas;
  * Created by xeniu on 29.01.2018.
  */
 
-public class CrumblingBrick extends GameObject {
+public class Brick extends GameObject {
     private int hp;
 
-    public CrumblingBrick(int hp) {
+    public Brick(int hp) {
         super();
         this.isDestructable = true;
         this.hp = hp;
@@ -17,8 +17,6 @@ public class CrumblingBrick extends GameObject {
 
     @Override
     public void onDrawUpdate(Canvas canvas, long timePassed) {
-        super.onDrawUpdate(canvas, timePassed);
-
     }
 
     public void hit(int strength) {

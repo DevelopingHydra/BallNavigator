@@ -34,6 +34,7 @@ public class GameView extends SurfaceView {
                         updateCanvas();
                     } catch (Exception e) {
                     }
+                    runGame();
                 }
             }
 
@@ -55,17 +56,17 @@ public class GameView extends SurfaceView {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                GameManager.getInstance().startSwipe(touchX, touchY);
+                GameManager.getInstance().startSwipe(touchX, touchY, timePassed);
                 break;
             case MotionEvent.ACTION_MOVE:
-                GameManager.getInstance().onSwipeMove(touchX, touchY);
+                GameManager.getInstance().onSwipeMove(touchX, touchY, timePassed);
                 break;
             case MotionEvent.ACTION_UP:
-                GameManager.getInstance().stopSwipe(touchX, touchY);
+                GameManager.getInstance().stopSwipe(touchX, touchY, timePassed);
                 break;
         }
 
-        return super.onTouchEvent(event);
+        return true;
     }
 
     @Override
@@ -77,8 +78,8 @@ public class GameView extends SurfaceView {
 
     private void updateCanvas() {
         Canvas c = holder.lockCanvas();
-//        onDraw(c);
-        draw(c);
+        onDraw(c);
+//        draw(c);
         holder.unlockCanvasAndPost(c);
     }
 

@@ -5,6 +5,9 @@ package at.passini.ballnavigator.game;
  */
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.Log;
 
 import java.util.LinkedList;
 
@@ -26,8 +29,10 @@ public class GameManager {
 
     private LinkedList<GameObject> gameElements;
     private LinkedList<Ball> balls;
+
     private LinkedList<DrawingLine> drawingLines;
     private DrawingLine currentDrawingLine;
+    private boolean isCurrentlyDrawing;
 
     private static GameManager instance;
 
@@ -37,6 +42,7 @@ public class GameManager {
         this.gameElements = new LinkedList<>();
         this.balls = new LinkedList<>();
         this.drawingLines = new LinkedList<>();
+        this.isCurrentlyDrawing = false;
     }
 
     public static GameManager getInstance() {
@@ -47,8 +53,17 @@ public class GameManager {
     }
 
     public void onDrawUpdate(Canvas canvas, long timePassed) {
+        // remove garbage
+        removeUnusedDrawingLines();
+
+        // move with collision detection
         moveBall();
 
+        // draw all things
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
+        p.setStyle(Paint.Style.FILL);
+        canvas.drawRect(0, 0, deviceWidth, deviceHeight, p);
         for (GameObject go : gameElements) {
             go.onDrawUpdate(canvas, timePassed);
         }
@@ -57,6 +72,7 @@ public class GameManager {
             ball.onDrawUpdate(canvas, timePassed);
         }
 
+//        Log.d("gm","num drawing lines: "+this.drawingLines.size());
         for (DrawingLine lines : drawingLines) {
             lines.onDrawUpdate(canvas, timePassed);
         }
@@ -72,9 +88,18 @@ public class GameManager {
         }
     }
 
-    private void updateDisplayUnits(){
-        this.displayUnitX=this.deviceWidth/this.gridColumns;
-        this.displayUnitY=this.deviceHeight/this.gridRows;
+    private void removeUnusedDrawingLines() {
+        for (DrawingLine line : this.drawingLines) {
+            if (line.isDead()) {
+                Log.d("gm","killing drawing line");
+                this.drawingLines.remove(line);
+            }
+        }
+    }
+
+    private void updateDisplayUnits() {
+        this.displayUnitX = this.deviceWidth / this.gridColumns;
+        this.displayUnitY = this.deviceHeight / this.gridRows;
     }
 
     public void setDeviceWidth(int deviceWidth) {
@@ -103,26 +128,31 @@ public class GameManager {
 
     /* swipe handling and drawing */
 
-    public void startSwipe(float touchX, float touchY) {
-        currentDrawingLine = new DrawingLine();
-        currentDrawingLine.addPosition(new Vector(touchX, touchY));
+    public void startSwipe(float touchX, float touchY, long timePassed) {
+        Log.d("gm", "start swipe");
+        DrawingLine local =  new DrawingLine(timePassed);
+        local.addPosition(new Vector(touchX, touchY));
 
-        this.drawingLines.add(currentDrawingLine);
+        this.drawingLines.add(local);
+        currentDrawingLine = local;
+        this.isCurrentlyDrawing = true;
     }
 
-    public void onSwipeMove(float touchX, float touchY) {
-        if (this.currentDrawingLine != null) {
+    public void onSwipeMove(float touchX, float touchY, long timePassed) {
+        Log.d("gm", "still swiping");
+        if (this.isCurrentlyDrawing) {
             this.currentDrawingLine.addPosition(new Vector(touchX, touchY));
         } else {
             throw new RuntimeException("WTF?!");
         }
     }
 
-    public void stopSwipe(float touchX, float touchY) {
+    public void stopSwipe(float touchX, float touchY, long timePassed) {
+        Log.d("gm", "stop swipe");
         if (this.currentDrawingLine != null) {
             this.currentDrawingLine.addPosition(new Vector(touchX, touchY));
         }
-        this.currentDrawingLine = null;
+        this.isCurrentlyDrawing = false;
     }
 
 
