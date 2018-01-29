@@ -22,6 +22,7 @@ public class GameManager {
     private final int gridRows = 12;
 
     private int deviceWidth, deviceHeight;
+    private int displayUnitX, displayUnitY;
 
     private LinkedList<GameObject> gameElements;
     private LinkedList<Ball> balls;
@@ -71,6 +72,10 @@ public class GameManager {
         }
     }
 
+    private void updateDisplayUnits(){
+        this.displayUnitX=this.deviceWidth/this.gridColumns;
+        this.displayUnitY=this.deviceHeight/this.gridRows;
+    }
 
     public void setDeviceWidth(int deviceWidth) {
         this.deviceWidth = deviceWidth;
@@ -78,6 +83,14 @@ public class GameManager {
 
     public void setDeviceHeight(int deviceHeight) {
         this.deviceHeight = deviceHeight;
+    }
+
+    public int getDisplayUnitX() {
+        return displayUnitX;
+    }
+
+    public int getDisplayUnitY() {
+        return displayUnitY;
     }
 
     public void addGameObject(GameObject gameObject) {
@@ -106,6 +119,9 @@ public class GameManager {
     }
 
     public void stopSwipe(float touchX, float touchY) {
+        if (this.currentDrawingLine != null) {
+            this.currentDrawingLine.addPosition(new Vector(touchX, touchY));
+        }
         this.currentDrawingLine = null;
     }
 
