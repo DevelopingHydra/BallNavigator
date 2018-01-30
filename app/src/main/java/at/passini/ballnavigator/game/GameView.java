@@ -25,7 +25,8 @@ public class GameView extends SurfaceView {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 if (!running) {
-                    runGame();
+//                    runGame();
+                    startGame();
                 }
             }
 
@@ -80,12 +81,17 @@ public class GameView extends SurfaceView {
         GameManager.getInstance().onDrawUpdate(canvas, timePassed);
     }
 
+    private void startGame(){
+        running = true;
+        runGame();
+        GameManager.getInstance().startGame();
+    }
+
 
     /**
      * game loop
      */
     private void runGame() {
-        running = true;
         timeLastUpdate = System.currentTimeMillis();
         timePassed = 0;
         new Thread(new Runnable() {
