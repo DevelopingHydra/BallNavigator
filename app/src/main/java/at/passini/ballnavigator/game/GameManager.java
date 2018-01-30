@@ -9,7 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import at.passini.ballnavigator.game.Helper.Vector;
 import at.passini.ballnavigator.game.gameobjects.Ball;
@@ -27,10 +27,10 @@ public class GameManager {
     private int deviceWidth, deviceHeight;
     private int displayUnitX, displayUnitY;
 
-    private LinkedList<GameObject> gameElements;
-    private LinkedList<Ball> balls;
+    private ConcurrentLinkedQueue<GameObject> gameElements;
+    private ConcurrentLinkedQueue<Ball> balls;
 
-    private LinkedList<DrawingLine> drawingLines;
+    private ConcurrentLinkedQueue<DrawingLine> drawingLines;
     private DrawingLine currentDrawingLine;
     private boolean isCurrentlyDrawing;
 
@@ -39,9 +39,9 @@ public class GameManager {
     private GameManager() {
         this.deviceHeight = 0;
         this.deviceWidth = 0;
-        this.gameElements = new LinkedList<>();
-        this.balls = new LinkedList<>();
-        this.drawingLines = new LinkedList<>();
+        this.gameElements = new ConcurrentLinkedQueue<>();
+        this.balls = new ConcurrentLinkedQueue<>();
+        this.drawingLines = new ConcurrentLinkedQueue<>();
         this.isCurrentlyDrawing = false;
     }
 
