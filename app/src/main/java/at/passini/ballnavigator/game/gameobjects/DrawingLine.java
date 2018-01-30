@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import at.passini.ballnavigator.game.Helper.Vector;
 
@@ -14,12 +14,12 @@ import at.passini.ballnavigator.game.Helper.Vector;
  */
 
 public class DrawingLine implements DrawableObject {
-    private LinkedList<LinePoint> positions;
+    private ConcurrentLinkedQueue<LinePoint> positions;
 
     private Paint paintLine;
 
     public DrawingLine(long timeWhenStarted) {
-        this.positions = new LinkedList<>();
+        this.positions = new ConcurrentLinkedQueue <>();
 
         paintLine = new Paint();
         paintLine.setColor(Color.DKGRAY);
@@ -37,6 +37,7 @@ public class DrawingLine implements DrawableObject {
         if (this.positions.size() > 0) {
             // draw Polygon
             Vector lastPoint = null;
+
             for (LinePoint point : positions) {
                 point.onTimePassed(timePassed);
                 if (point.isDead()) {

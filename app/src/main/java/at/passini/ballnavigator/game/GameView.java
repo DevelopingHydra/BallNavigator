@@ -2,14 +2,9 @@ package at.passini.ballnavigator.game;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
-import java.util.LinkedList;
-
-import at.passini.ballnavigator.game.Helper.Vector;
 
 /**
  * Created by Benedikt on 27.01.2018.
@@ -18,7 +13,7 @@ import at.passini.ballnavigator.game.Helper.Vector;
 public class GameView extends SurfaceView {
     private final SurfaceHolder holder;
     private final Context context;
-    private boolean isRunning;
+    private boolean running;
     private long timePassed;
     private long timeLastUpdate;
 
@@ -29,28 +24,23 @@ public class GameView extends SurfaceView {
         holder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                if (!isRunning) {
-                    try {
-                        updateCanvas();
-                    } catch (Exception e) {
-                    }
+                if (!running) {
                     runGame();
                 }
             }
 
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            }
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
+                running =false;
             }
         });
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         float touchX = event.getX();
         float touchY = event.getY();
 
@@ -77,39 +67,32 @@ public class GameView extends SurfaceView {
     }
 
     private void updateCanvas() {
-        Canvas c = holder.lockCanvas();
-        onDraw(c);
-//        draw(c);
-        holder.unlockCanvasAndPost(c);
+       Canvas c = holder.lockCanvas();
+       myDraw(c);
+       holder.unlockCanvasAndPost(c);
+
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
+    private void myDraw(Canvas canvas){
         long currentTime = System.currentTimeMillis();
         timePassed = currentTime - timeLastUpdate;
         timeLastUpdate = currentTime;
-
         GameManager.getInstance().onDrawUpdate(canvas, timePassed);
     }
+
 
     /**
      * game loop
      */
     private void runGame() {
-        isRunning = true;
+        running = true;
         timeLastUpdate = System.currentTimeMillis();
         timePassed = 0;
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (isRunning) {
-                    try {
-                        updateCanvas();
-                    } catch (Exception e) {
-                    }
-
+                while (running) {
+                    updateCanvas();
                     try {
                         Thread.sleep(20);
                     } catch (InterruptedException e) {
