@@ -17,6 +17,10 @@ public abstract class GameObject implements DrawableObject {
         this.isDestructable = false;
     }
 
+    public void onHit(Ball ball){
+        // subclass shoudl implement this
+    }
+
     public boolean isColliding(Rect rCollider) {
         return this.rBox.left < rCollider.left && this.rBox.right > rCollider.right
                 && this.rBox.top < rCollider.top && this.rBox.bottom > rCollider.bottom;

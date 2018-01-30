@@ -60,7 +60,7 @@ public class DrawingLine implements DrawableObject {
 }
 
 class LinePoint extends Vector {
-    private final int timeTillDisapearance = 3000;
+    private final int timeTillDisapearance = 1000;
     private long timeLeft;
 
     public LinePoint(Vector v) {
