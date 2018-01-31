@@ -30,10 +30,10 @@ public abstract class GameObject implements DrawableObject {
 
     public GameObject(int gridX, int gridY, int gridRight, int gridBottom) {
         this();
-        this.rBoxGrid.left = gridX;
-        this.rBoxGrid.top = gridY;
-        this.rBoxGrid.right = gridRight;
-        this.rBoxGrid.bottom = gridBottom;
+        setGridX(gridX);
+        setGridY(gridY);
+        setGridBottom(gridBottom);
+        setGridRight(gridRight);
     }
 
     public void onHit(Ball ball) {
@@ -49,23 +49,33 @@ public abstract class GameObject implements DrawableObject {
     }
 
     public int getAbsoluteRight() {
-        return this.rBoxAbsolute.right ;
+        return this.rBoxAbsolute.right;
     }
 
     public int getAbsoluteBottom() {
-        return this.rBoxAbsolute.bottom ;
+        return this.rBoxAbsolute.bottom;
     }
 
     public void setAbsoluteX(double posX) {
         this.rBoxAbsolute.left = (int) posX;
-        setGridX(GameManager.getInstance().getGridX(posX));
+        this.rBoxGrid.left = GameManager.getInstance().getGridX(posX);
     }
 
     public void setAbsoluteY(double posY) {
         this.rBoxAbsolute.top = (int) posY;
-        setGridY(GameManager.getInstance().getGridY(posY));
+        this.rBoxGrid.top = GameManager.getInstance().getGridY(posY);
     }
-    
+
+    public void setAbsoluteRight(double posRight) {
+        this.rBoxAbsolute.right = (int) posRight;
+        this.rBoxGrid.right = GameManager.getInstance().getGridX(posRight);
+    }
+
+    public void setAbsoluteBottom(double posBottom) {
+        this.rBoxAbsolute.bottom = (int) posBottom;
+        this.rBoxGrid.bottom = GameManager.getInstance().getGridY(posBottom);
+    }
+
     public Rect getAbsoluteRectangle() {
         return rBoxAbsolute;
     }
@@ -79,21 +89,31 @@ public abstract class GameObject implements DrawableObject {
     }
 
     public int getGridRight() {
-        return this.rBoxGrid.right ;
+        return this.rBoxGrid.right;
     }
 
     public int getGridBottom() {
-        return this.rBoxGrid.bottom ;
+        return this.rBoxGrid.bottom;
     }
 
     public void setGridX(int posX) {
         this.rBoxGrid.left = posX;
-        setAbsoluteX(GameManager.getInstance().getAbsoluteX(posX));
+        this.rBoxAbsolute.left = (int) GameManager.getInstance().getAbsoluteX(posX);
     }
 
     public void setGridY(int posY) {
         this.rBoxGrid.top = posY;
-        setAbsoluteY(GameManager.getInstance().getAbsoluteY(posY));
+        this.rBoxAbsolute.top = (int) GameManager.getInstance().getAbsoluteY(posY);
+    }
+
+    public void setGridRight(int posRight) {
+        this.rBoxGrid.right = posRight;
+        this.rBoxAbsolute.right = (int) GameManager.getInstance().getAbsoluteX(posRight);
+    }
+
+    public void setGridBottom(int posBottom) {
+        this.rBoxGrid.bottom = posBottom;
+        this.rBoxAbsolute.bottom = (int) GameManager.getInstance().getAbsoluteY(posBottom);
     }
 
     public Rect getGridRectangle() {

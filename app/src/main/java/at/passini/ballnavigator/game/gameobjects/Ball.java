@@ -3,7 +3,6 @@ package at.passini.ballnavigator.game.gameobjects;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.util.Log;
 
 import at.passini.ballnavigator.game.GameManager;
@@ -21,10 +20,10 @@ public class Ball extends GameObject {
     private Paint pColor;
 
     public Ball(int gridX, int gridY, Vector vDirectionGrid) {
-        setvDirectionGrid(vDirectionGrid);
+        setDirectionGrid(vDirectionGrid);
 
-        this.moveTo(new Vector(gridX, gridY));
-        radius = GameManager.getInstance().getGridX(20);
+        radius = 20;// absolute value! should be called before setting the absolutePosition()
+        this.setAbsolutePosition(new Vector(gridX, gridY));
 
         pColor = new Paint();
         pColor.setColor(Color.DKGRAY);
@@ -33,9 +32,8 @@ public class Ball extends GameObject {
 
     @Override
     public void onDrawUpdate(Canvas canvas, long timePassed) {
-        Rect absoluteRect = GameManager.getInstance().getAbsoluteRect(this.rBoxAbsolute);
-        canvas.drawOval(absoluteRect.left, absoluteRect.top, absoluteRect.right, absoluteRect.bottom, this.pColor);
-        Log.d("ball", "drawing at " + absoluteRect.toShortString());
+        canvas.drawOval(rBoxAbsolute.left, rBoxAbsolute.top, rBoxAbsolute.right, rBoxAbsolute.bottom, this.pColor);
+        Log.d("ball", "drawing at " + rBoxAbsolute.toShortString()+" with speed: "+this.vDirectionAbsolute.toString());
     }
 
     public boolean isMovingUp() {
@@ -56,20 +54,24 @@ public class Ball extends GameObject {
 
     public void flipDirectionX() {
         this.vDirectionAbsolute.setX(-this.vDirectionAbsolute.getX());
+        this.vDirectionGrid.setX(-this.vDirectionGrid.getX());
     }
 
     public void flipDirectionY() {
         this.vDirectionAbsolute.setY(-this.vDirectionAbsolute.getY());
+        this.vDirectionGrid.setY(-this.vDirectionGrid.getY());
     }
 
-    public void moveTo(Vector vPointNewPosition) {
+    public void setAbsolutePosition(Vector vPointNewPosition) {
         int posX = (int) vPointNewPosition.getX();
         int posY = (int) vPointNewPosition.getY();
+        int posRight = posX + this.radius * 2;
+        int posBottom = posY + this.radius * 2;
 
-        this.rBoxAbsolute.left = posX;
-        this.rBoxAbsolute.top = posY;
-        this.rBoxAbsolute.right = this.rBoxAbsolute.left + this.radius * 2;
-        this.rBoxAbsolute.bottom = this.rBoxAbsolute.top + this.radius * 2;
+        setAbsoluteX(posX);
+        setAbsoluteY(posY);
+        setAbsoluteRight(posRight);
+        setAbsoluteBottom(posBottom);
     }
 
     @Override
@@ -96,12 +98,12 @@ public class Ball extends GameObject {
         return vDirectionAbsolute;
     }
 
-    public void setvDirectionAbsolute(Vector vDirectionAbsolute) {
+    public void setDirectionAbsolute(Vector vDirectionAbsolute) {
         this.vDirectionAbsolute = vDirectionAbsolute;
         vDirectionGrid = GameManager.getInstance().getGridLocation(vDirectionAbsolute);
     }
 
-    public void setvDirectionGrid(Vector vDirectionGrid) {
+    public void setDirectionGrid(Vector vDirectionGrid) {
         this.vDirectionGrid = vDirectionGrid;
         vDirectionAbsolute = GameManager.getInstance().getAbsoluteLocation(vDirectionGrid);
     }
@@ -113,6 +115,7 @@ public class Ball extends GameObject {
      */
     public Vector getAbsoluteContactPoint() {
         // should calculate to point that would touch another object
+        // tip: take a vector from location to direction. then make a unit vector out of it. then multiply that by the radius :)
         return new Vector(this.rBoxAbsolute.centerX(), this.rBoxAbsolute.centerY());
     }
 }

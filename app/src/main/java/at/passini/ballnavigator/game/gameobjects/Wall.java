@@ -23,6 +23,6 @@ public class Wall extends GameObject {
 
     @Override
     public void onDrawUpdate(Canvas canvas, long timePassed) {
-        canvas.drawRect(GameManager.getInstance().getAbsoluteRect(this.rBoxAbsolute), pColor);
+        canvas.drawRect(this.rBoxAbsolute, pColor);
     }
 }
