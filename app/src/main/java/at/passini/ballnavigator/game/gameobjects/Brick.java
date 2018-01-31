@@ -1,6 +1,7 @@
 package at.passini.ballnavigator.game.gameobjects;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 /**
  * Created by xeniu on 29.01.2018.
@@ -9,8 +10,8 @@ import android.graphics.Canvas;
 public class Brick extends GameObject {
     private int hp;
 
-    public Brick(int hp) {
-        super();
+    public Brick(Rect rect, int hp) {
+        super(rect);
         this.isDestructable = true;
         this.hp = hp;
     }

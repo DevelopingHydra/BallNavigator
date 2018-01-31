@@ -36,6 +36,14 @@ public class Vector {
     public double getLength() {
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
+
+    public double getDistanceTo(Vector vPoint) {
+        Vector vToPoint = vPoint.subtract(this);
+        return vToPoint.getLength();
+    }
+
+    /* getter and setter */
+
     public double getX() {
         return x;
     }

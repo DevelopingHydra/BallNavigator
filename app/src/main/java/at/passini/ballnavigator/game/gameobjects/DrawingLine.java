@@ -33,7 +33,6 @@ public class DrawingLine implements DrawableObject {
 
     @Override
     public void onDrawUpdate(Canvas canvas, long timePassed) {
-        Log.d("dl", "drawing datapoints: " + this.positions.size());
         if (this.positions.size() > 0) {
             // draw Polygon
             Vector lastPoint = null;
