@@ -3,8 +3,10 @@ package at.passini.ballnavigator.game.gameobjects;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.Log;
 
+import at.passini.ballnavigator.game.GameManager;
 import at.passini.ballnavigator.game.Helper.Vector;
 
 /**
@@ -13,15 +15,16 @@ import at.passini.ballnavigator.game.Helper.Vector;
 
 public class Ball extends GameObject {
 
-    private Vector vDirection;
-    private final int radius = 20;
+    private Vector vDirectionAbsolute, vDirectionGrid;
+    private int radius;
 
     private Paint pColor;
 
-    public Ball(int posX, int posY, Vector vDirection) {
-        this.vDirection = vDirection;
+    public Ball(int gridX, int gridY, Vector vDirectionGrid) {
+        setvDirectionGrid(vDirectionGrid);
 
-        this.moveTo(new Vector(posX, posY));
+        this.moveTo(new Vector(gridX, gridY));
+        radius = GameManager.getInstance().getGridX(20);
 
         pColor = new Paint();
         pColor.setColor(Color.DKGRAY);
@@ -30,72 +33,77 @@ public class Ball extends GameObject {
 
     @Override
     public void onDrawUpdate(Canvas canvas, long timePassed) {
-        canvas.drawOval(this.rBox.left, this.rBox.top, this.rBox.right, this.rBox.bottom, this.pColor);
-        Log.d("ball", "drawing at " + this.rBox.toShortString());
-    }
-
-    public int getRadius() {
-        return this.getWidth() / 2;
-    }
-
-    public double getDirectionX() {
-        return vDirection.getX();
-    }
-
-    public double getDirectionY() {
-        return vDirection.getY();
+        Rect absoluteRect = GameManager.getInstance().getAbsoluteRect(this.rBoxAbsolute);
+        canvas.drawOval(absoluteRect.left, absoluteRect.top, absoluteRect.right, absoluteRect.bottom, this.pColor);
+        Log.d("ball", "drawing at " + absoluteRect.toShortString());
     }
 
     public boolean isMovingUp() {
-        return this.vDirection.getY() < 0;
+        return this.vDirectionAbsolute.getY() < 0;
     }
 
     public boolean isMovingDown() {
-        return this.vDirection.getY() > 0;
+        return this.vDirectionAbsolute.getY() > 0;
     }
 
     public boolean isMovingLeft() {
-        return this.vDirection.getX() < 0;
+        return this.vDirectionAbsolute.getX() < 0;
     }
 
     public boolean isMovingRight() {
-        return this.vDirection.getX() > 0;
+        return this.vDirectionAbsolute.getX() > 0;
     }
 
     public void flipDirectionX() {
-        this.vDirection.setX(-this.vDirection.getX());
+        this.vDirectionAbsolute.setX(-this.vDirectionAbsolute.getX());
     }
 
     public void flipDirectionY() {
-        this.vDirection.setY(-this.vDirection.getY());
+        this.vDirectionAbsolute.setY(-this.vDirectionAbsolute.getY());
     }
 
     public void moveTo(Vector vPointNewPosition) {
         int posX = (int) vPointNewPosition.getX();
         int posY = (int) vPointNewPosition.getY();
 
-        this.rBox.left = posX;
-        this.rBox.top = posY;
-        this.rBox.right = this.rBox.left + this.radius * 2;
-        this.rBox.bottom = this.rBox.top + this.radius * 2;
+        this.rBoxAbsolute.left = posX;
+        this.rBoxAbsolute.top = posY;
+        this.rBoxAbsolute.right = this.rBoxAbsolute.left + this.radius * 2;
+        this.rBoxAbsolute.bottom = this.rBoxAbsolute.top + this.radius * 2;
     }
 
     @Override
-    public int getPosX() {
-        return this.rBox.centerX();
+    public int getAbsoluteX() {
+        return this.rBoxAbsolute.centerX();
     }
 
     @Override
-    public int getPosY() {
-        return this.rBox.centerY();
+    public int getAbsoluteY() {
+        return this.rBoxAbsolute.centerY();
     }
 
-    public void setDirectionVector(Vector vDirection) {
-        this.vDirection = vDirection;
+    @Override
+    public int getGridX() {
+        return this.rBoxGrid.centerX();
     }
 
-    public Vector getDirectionVector() {
-        return vDirection;
+    @Override
+    public int getGridY() {
+        return this.rBoxGrid.centerY();
+    }
+
+    public Vector getAbsoluteDirectionVector() {
+        return vDirectionAbsolute;
+    }
+
+    public void setvDirectionAbsolute(Vector vDirectionAbsolute) {
+        this.vDirectionAbsolute = vDirectionAbsolute;
+        vDirectionGrid = GameManager.getInstance().getGridLocation(vDirectionAbsolute);
+    }
+
+    public void setvDirectionGrid(Vector vDirectionGrid) {
+        this.vDirectionGrid = vDirectionGrid;
+        vDirectionAbsolute = GameManager.getInstance().getAbsoluteLocation(vDirectionGrid);
     }
 
     /**
@@ -103,8 +111,8 @@ public class Ball extends GameObject {
      *
      * @return
      */
-    public Vector getContactPoint() {
+    public Vector getAbsoluteContactPoint() {
         // should calculate to point that would touch another object
-        return new Vector(this.rBox.centerX(), this.rBox.centerY());
+        return new Vector(this.rBoxAbsolute.centerX(), this.rBoxAbsolute.centerY());
     }
 }

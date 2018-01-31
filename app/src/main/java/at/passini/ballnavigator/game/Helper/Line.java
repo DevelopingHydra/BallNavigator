@@ -6,12 +6,16 @@ package at.passini.ballnavigator.game.Helper;
 
 public class Line {
     private Vector vPointA, vPointB;
-    private boolean isLineSegment;
+    private boolean lineSegment;
+
+    public Line(Vector vPointA, Vector vPointB) {
+        this(vPointA, vPointB, true);
+    }
 
     public Line(Vector vPointA, Vector vPointB, boolean isLineSegment) {
         this.vPointA = vPointA;
         this.vPointB = vPointB;
-        this.isLineSegment = isLineSegment;
+        this.lineSegment = isLineSegment;
     }
 
     public Vector intersectWithOtherLine(Line otherLine) {
@@ -43,36 +47,39 @@ public class Line {
 
             // now we check if we have line segments
             // if so we have to check further before we can decide if there in intersection
-            if (this.isLineSegment) {
-                double pIntersectionX = vPointIntersection.getX();
-                double pIntersectionY = vPointIntersection.getY();
+            if (this.isLineSegment() || otherLine.isLineSegment()) {
+                if (this.lineSegment) {
+                    double pIntersectionX = vPointIntersection.getX();
+                    double pIntersectionY = vPointIntersection.getY();
 
-                double pLeft = this.vPointA.getX() < this.vPointB.getX() ? this.vPointA.getX() : this.vPointB.getX();
-                double pRight = this.vPointA.getX() > this.vPointB.getX() ? this.vPointA.getX() : this.vPointB.getX();
-                double pTop = this.vPointA.getY() < this.vPointB.getY() ? this.vPointA.getY() : this.vPointB.getY();
-                double pBottom = this.vPointA.getY() > this.vPointB.getY() ? this.vPointA.getY() : this.vPointB.getY();
+                    double pLeft = this.vPointA.getX() < this.vPointB.getX() ? this.vPointA.getX() : this.vPointB.getX();
+                    double pRight = this.vPointA.getX() > this.vPointB.getX() ? this.vPointA.getX() : this.vPointB.getX();
+                    double pTop = this.vPointA.getY() < this.vPointB.getY() ? this.vPointA.getY() : this.vPointB.getY();
+                    double pBottom = this.vPointA.getY() > this.vPointB.getY() ? this.vPointA.getY() : this.vPointB.getY();
 
-                if (pIntersectionX > pLeft && pIntersectionX < pRight && pIntersectionY > pTop && pIntersectionY < pBottom) {
-                    doesIntersect = true;
+                    if (pIntersectionX > pLeft && pIntersectionX < pRight && pIntersectionY > pTop && pIntersectionY < pBottom) {
+                        doesIntersect = true;
+                    }
                 }
-            }
-            if (otherLine.isLineSegment) {
-                double pIntersectionX = vPointIntersection.getX();
-                double pIntersectionY = vPointIntersection.getY();
+                if (otherLine.isLineSegment()) {
+                    double pIntersectionX = vPointIntersection.getX();
+                    double pIntersectionY = vPointIntersection.getY();
 
-                double pLeft = otherLine.getvPointA().getX() < otherLine.getvPointB().getX() ? otherLine.getvPointA().getX() : otherLine.getvPointB().getX();
-                double pRight = otherLine.getvPointA().getX() > otherLine.getvPointB().getX() ? otherLine.getvPointA().getX() : otherLine.getvPointB().getX();
-                double pTop = otherLine.getvPointA().getY() < otherLine.getvPointB().getY() ? otherLine.getvPointA().getY() : otherLine.getvPointB().getY();
-                double pBottom = otherLine.getvPointA().getY() > otherLine.getvPointB().getY() ? otherLine.getvPointA().getY() : otherLine.getvPointB().getY();
+                    double pLeft = otherLine.getPointA().getX() < otherLine.getPointB().getX() ? otherLine.getPointA().getX() : otherLine.getPointB().getX();
+                    double pRight = otherLine.getPointA().getX() > otherLine.getPointB().getX() ? otherLine.getPointA().getX() : otherLine.getPointB().getX();
+                    double pTop = otherLine.getPointA().getY() < otherLine.getPointB().getY() ? otherLine.getPointA().getY() : otherLine.getPointB().getY();
+                    double pBottom = otherLine.getPointA().getY() > otherLine.getPointB().getY() ? otherLine.getPointA().getY() : otherLine.getPointB().getY();
 
-                if (pIntersectionX > pLeft && pIntersectionX < pRight && pIntersectionY > pTop && pIntersectionY < pBottom) {
-                    doesIntersect = true;
+                    if (pIntersectionX > pLeft && pIntersectionX < pRight && pIntersectionY > pTop && pIntersectionY < pBottom) {
+                        doesIntersect = true;
+                    }
                 }
+            } else {
+                doesIntersect = true;
             }
-
-        } else {
 
         }
+
         if (doesIntersect) {
             return vPointIntersection;
         } else {
@@ -82,19 +89,27 @@ public class Line {
         }
     }
 
-    public Vector getvPointA() {
+    public Vector getPointA() {
         return vPointA;
     }
 
-    public void setvPointA(Vector vPointA) {
+    public void setPointA(Vector vPointA) {
         this.vPointA = vPointA;
     }
 
-    public Vector getvPointB() {
+    public Vector getPointB() {
         return vPointB;
     }
 
-    public void setvPointB(Vector vPointB) {
+    public void setPointB(Vector vPointB) {
         this.vPointB = vPointB;
+    }
+
+    public boolean isLineSegment() {
+        return lineSegment;
+    }
+
+    public void setLineSegment(boolean lineSegment) {
+        this.lineSegment = lineSegment;
     }
 }

@@ -1,77 +1,102 @@
 package at.passini.ballnavigator.game.gameobjects;
 
-import android.graphics.Canvas;
 import android.graphics.Rect;
+
+import at.passini.ballnavigator.game.GameManager;
 
 /**
  * Created by xeniu on 29.01.2018.
  */
 
 public abstract class GameObject implements DrawableObject {
-    protected Rect rBox;
+    protected Rect rBoxAbsolute, rBoxGrid;
     protected int rotation;
     protected boolean isDestructable;
 
     public GameObject() {
         this.rotation = 0;
         this.isDestructable = false;
-        this.rBox = new Rect(0, 0, 0, 0);
+        this.rBoxAbsolute = new Rect(0, 0, 0, 0);
+        this.rBoxGrid = new Rect(0, 0, 0, 0);
     }
 
-    public GameObject(Rect rect) {
+    public GameObject(Rect gridRect) {
         this();
-        this.rBox.left = rect.left;
-        this.rBox.top = rect.top;
-        this.rBox.right = rect.right;
-        this.rBox.bottom = rect.bottom;
+        this.rBoxGrid.left = gridRect.left;
+        this.rBoxGrid.top = gridRect.top;
+        this.rBoxGrid.right = gridRect.right;
+        this.rBoxGrid.bottom = gridRect.bottom;
     }
 
-    public GameObject(int x, int y, int width, int height) {
+    public GameObject(int gridX, int gridY, int gridRight, int gridBottom) {
         this();
-        this.rBox.left = x;
-        this.rBox.top = y;
-        this.rBox.right = x + width;
-        this.rBox.bottom = x + height;
+        this.rBoxGrid.left = gridX;
+        this.rBoxGrid.top = gridY;
+        this.rBoxGrid.right = gridRight;
+        this.rBoxGrid.bottom = gridBottom;
     }
 
     public void onHit(Ball ball) {
         // subclass can implement this
     }
 
-    public void onHit(Ball ball){
-        // subclass shoudl implement this
+    public int getAbsoluteX() {
+        return this.rBoxAbsolute.left;
     }
 
-    public boolean isColliding(Rect rCollider) {
-        return this.rBox.left < rCollider.left && this.rBox.right > rCollider.right
-                && this.rBox.top < rCollider.top && this.rBox.bottom > rCollider.bottom;
+    public int getAbsoluteY() {
+        return this.rBoxAbsolute.top;
     }
 
-    public int getPosX() {
-        return this.rBox.left;
+    public int getAbsoluteRight() {
+        return this.rBoxAbsolute.right ;
     }
 
-    public int getPosY() {
-        return this.rBox.top;
+    public int getAbsoluteBottom() {
+        return this.rBoxAbsolute.bottom ;
     }
 
-    public int getWidth() {
-        return this.rBox.right - this.rBox.left;
+    public void setAbsoluteX(double posX) {
+        this.rBoxAbsolute.left = (int) posX;
+        setGridX(GameManager.getInstance().getGridX(posX));
     }
 
-    public int getHeight() {
-        return this.rBox.bottom - this.rBox.top;
+    public void setAbsoluteY(double posY) {
+        this.rBoxAbsolute.top = (int) posY;
+        setGridY(GameManager.getInstance().getGridY(posY));
+    }
+    
+    public Rect getAbsoluteRectangle() {
+        return rBoxAbsolute;
     }
 
-    public void setPosX(int posX) {
-        this.rBox.left = posX;
+    public int getGridX() {
+        return this.rBoxGrid.left;
     }
 
-    public void setPosY(int posY) {
-        this.rBox.top = posY;
+    public int getGridY() {
+        return this.rBoxGrid.top;
     }
 
-    public Rect getRectangle() {
-        return rBox;
+    public int getGridRight() {
+        return this.rBoxGrid.right ;
+    }
+
+    public int getGridBottom() {
+        return this.rBoxGrid.bottom ;
+    }
+
+    public void setGridX(int posX) {
+        this.rBoxGrid.left = posX;
+        setAbsoluteX(GameManager.getInstance().getAbsoluteX(posX));
+    }
+
+    public void setGridY(int posY) {
+        this.rBoxGrid.top = posY;
+        setAbsoluteY(GameManager.getInstance().getAbsoluteY(posY));
+    }
+
+    public Rect getGridRectangle() {
+        return rBoxGrid;
     }
 }

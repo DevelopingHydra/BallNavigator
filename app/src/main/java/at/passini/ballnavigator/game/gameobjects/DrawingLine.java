@@ -3,10 +3,12 @@ package at.passini.ballnavigator.game.gameobjects;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.Log;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import at.passini.ballnavigator.game.GameManager;
 import at.passini.ballnavigator.game.Helper.Vector;
 
 /**

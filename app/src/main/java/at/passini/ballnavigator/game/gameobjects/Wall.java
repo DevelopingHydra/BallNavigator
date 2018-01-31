@@ -3,7 +3,8 @@ package at.passini.ballnavigator.game.gameobjects;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
+
+import at.passini.ballnavigator.game.GameManager;
 
 /**
  * Created by xeniu on 31.01.2018.
@@ -22,6 +23,6 @@ public class Wall extends GameObject {
 
     @Override
     public void onDrawUpdate(Canvas canvas, long timePassed) {
-        canvas.drawRect(this.rBox, pColor);
+        canvas.drawRect(GameManager.getInstance().getAbsoluteRect(this.rBoxAbsolute), pColor);
     }
 }
