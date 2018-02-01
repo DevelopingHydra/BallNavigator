@@ -118,6 +118,10 @@ public class LineTest {
         rectLines.add(new Line(new Vector(0, 0), new Vector(1000, 0)));
         expectedToIntersect.add(true);
 
+        ballRays.add(new Line(new Vector(33,27), new Vector(-96000,-163831)));
+        rectLines.add(new Line(new Vector(0, 0), new Vector(1000, 0)));
+        expectedToIntersect.add(true);
+
 
         for (int i = 0; i < ballRays.size(); i++) {
             Line ballRay = ballRays.get(i);

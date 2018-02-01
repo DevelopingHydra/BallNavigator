@@ -114,7 +114,7 @@ public class GameManager {
         this.gameElements.add(bottom);
 
         // before map works set up ball statically
-        balls.add(new Ball(2, 2, new Vector(-10f, -10f)));
+        balls.add(new Ball(new Vector(5, 5), new Vector(10f, 10f)));
     }
 
     /* collision detection */
@@ -150,12 +150,19 @@ public class GameManager {
                         Log.d("gm", "collision with wall or brick");
                         didCollisionHappen = true;
                         timeRemaining -= timeToMove;
+
+//                        break; // the ball can only collide with one object at a time
+                        // above line is wrong
+                        // we just have to get the new ballRay
+                        ballPosition = ball.getAbsoluteContactPoint();
+                        ballNewPosition = reachablePointWithinTime(ballPosition, ball.getAbsoluteDirectionVector(), timeRemaining);
+                        ballRay = new Line(ballPosition, ballNewPosition);
                     }
                 }
             }
 
             if (!didCollisionHappen) {
-                // no collision --> move the ball
+                // no collision --> the ball can move as he wants to so we move it
                 moveGameObjectToLocation(ball, ballNewPosition, timeRemaining, ball.getAbsoluteDirectionVector());
                 timeRemaining = 0;
             }
@@ -180,7 +187,7 @@ public class GameManager {
 
     /**
      * @param ballRay
-     * @return the time it took to move the ball if it was moved, otherwise 0
+     * @return the time it took to move the ball if it was moved or if we didn't move then 0
      */
     private double collisionDetectionRect(double timeRemaining, GameObject gameObject, Line ballRay, Ball ball) {
         // get all the brick lines
@@ -204,11 +211,11 @@ public class GameManager {
                 // there was an intersection
                 gameObject.onHit(ball);
                 // now return the time it took to move the ball there
-                double timeNeeded= moveGameObjectToLocation(ball, vPointIntersection, timeRemaining, ball.getAbsoluteDirectionVector());
+                double timeNeeded = moveGameObjectToLocation(ball, vPointIntersection, timeRemaining, ball.getAbsoluteDirectionVector());
 
                 // change the angle of the ball
-                Log.d("gm","ball should rotate now");
-                ball.setAbsolutePosition(getAbsoluteLocation(gridColumns / 2, gridRows / 2));
+                Log.d("gm", "ball should rotate now");
+                ball.moveToAbsolutePosition(getAbsoluteLocation(gridColumns/2,gridRows/2));
 
                 // now return
                 return timeNeeded;
@@ -241,6 +248,7 @@ public class GameManager {
 
         // now check if we have more time than we need
         if (timeAvailable > timeNeeded) {
+            // we have enough time to move to the target
             // now move to the target
             vPointToMoveTo = vPointTarget;
         } else {
@@ -251,24 +259,8 @@ public class GameManager {
 
         // now move the ball
         if (gameObject instanceof Ball) {
-            Ball b = (Ball) gameObject;
-            b.setAbsolutePosition(vPointToMoveTo);
-            // if it is a ball we also have to flip the direction
-            // todo correct calculation with angle
-//            if (b.isMovingUp() && vPointTarget.getY() < b.getAbsoluteY()) {
-//                b.flipDirectionY();
-//            }
-//            if (b.isMovingDown() && vPointTarget.getY() > b.getAbsoluteY()) {
-//                b.flipDirectionY();
-//            }
-//            if (b.isMovingLeft() && vPointTarget.getX() < b.getAbsoluteX()) {
-//                b.flipDirectionX();
-//            }
-//            if (b.isMovingRight() && vPointTarget.getX() > b.getAbsoluteX()) {
-//                b.flipDirectionX();
-//            }
-//            Log.d("gm","ball should rotate now");
-//            b.setAbsolutePosition(getAbsoluteLocation(gridColumns / 2, gridRows / 2));
+            Ball ball = (Ball) gameObject;
+            ball.moveToAbsolutePosition(vPointToMoveTo);
         } else {
             gameObject.setAbsoluteX((int) vPointToMoveTo.getX());
             gameObject.setAbsoluteY((int) vPointToMoveTo.getY());
@@ -296,7 +288,7 @@ public class GameManager {
         // t = s / v
         double v = vSpeed.getLength();
         double timeNeeded = distanceToTravel / v;
-        return timeNeeded;
+        return timeNeeded * 1000;
     }
 
     /**
@@ -309,7 +301,7 @@ public class GameManager {
     public double reachableDistanceWithinTime(double timeToTravel, Vector vSpeed) {
         // s = v * t
         double v = vSpeed.getLength();
-        return  (v * timeToTravel / 1000); // we travel per second
+        return (v * timeToTravel / 1000); // we travel per second
     }
 
     /* swipe handling and drawing */
