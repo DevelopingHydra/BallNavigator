@@ -3,6 +3,8 @@ package at.passini.ballnavigator;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import at.passini.ballnavigator.game.GameManager;
 import at.passini.ballnavigator.game.Helper.Vector;
 
@@ -22,34 +24,85 @@ public class CDTest {
 
     @Test
     public void testBallContactPoint() {
-        Vector vDirectionAbsolute = new Vector(10, 10);
-        Vector ballCenter = new Vector(5, 5);
-        int radius = 2;
+        ArrayList<Vector> vDirectoinAbsoluteValues = new ArrayList<>();
+        ArrayList<Vector> ballCenterValues = new ArrayList<>();
+        ArrayList<Integer> ballRadiusValues = new ArrayList<>();
+        ArrayList<Vector> expectedPoints = new ArrayList<>();
 
-        Vector direction = vDirectionAbsolute.subtract(ballCenter);
-        Vector uDirection = direction.getUnitVector();
-        Vector contactPoint = ballCenter.add(uDirection.multiplyWithScalar(radius));
+        vDirectoinAbsoluteValues.add(new Vector(10, 10));
+        ballCenterValues.add(new Vector(5, 5));
+        ballRadiusValues.add(2);
+        expectedPoints.add(new Vector(6.41, 6.41));
 
-        Vector expected = new Vector(6.41, 6.41);
+        vDirectoinAbsoluteValues.add(new Vector(10, -10));
+        ballCenterValues.add(new Vector(5, 5));
+        ballRadiusValues.add(2);
+        expectedPoints.add(new Vector(6.41, 3.59));
 
-        Assert.assertEquals(expected.getX(), contactPoint.getX(), 0.1);
-        Assert.assertEquals(expected.getY(), contactPoint.getY(), 0.1);
+
+        vDirectoinAbsoluteValues.add(new Vector(-14, 20));
+        ballCenterValues.add(new Vector(9, 5));
+        ballRadiusValues.add(3);
+        expectedPoints.add(new Vector(7.28, 7.46));
+
+
+        vDirectoinAbsoluteValues.add(new Vector(-4, -4));
+        ballCenterValues.add(new Vector(4, 5));
+        ballRadiusValues.add(1);
+        expectedPoints.add(new Vector(3.29, 4.29));
+
+
+        if (vDirectoinAbsoluteValues.size() != ballCenterValues.size() || ballCenterValues.size() != ballRadiusValues.size() || ballRadiusValues.size() != expectedPoints.size()) {
+            Assert.fail();
+        }
+
+        for (int i = 0; i < vDirectoinAbsoluteValues.size(); i++) {
+
+            Vector vDirectionAbsolute = vDirectoinAbsoluteValues.get(i);
+            Vector uDirection = vDirectionAbsolute.getUnitVector();
+            Vector contactPoint = ballCenterValues.get(i)
+                    .add(uDirection.multiplyWithScalar(ballRadiusValues.get(i)));
+
+            Assert.assertEquals(expectedPoints.get(i).getX(), contactPoint.getX(), 0.01);
+            Assert.assertEquals(expectedPoints.get(i).getY(), contactPoint.getY(), 0.01);
+        }
+
     }
+
 
     @Test
     public void ballMoveTo() {
-        Vector ballCenter = new Vector(40, 75);
-        Vector contactPoint = new Vector(30.077, 57.6351);
-        Vector targetPosition = new Vector(22.0599, 44.5019);
+        ArrayList<Vector> ballCenterValues = new ArrayList<>();
+        ArrayList<Vector> contactPoints = new ArrayList<>();
+        ArrayList<Vector> targetPositions = new ArrayList<>();
+        ArrayList<Vector> expectedNewPosition = new ArrayList<>();
 
-        Vector diff = ballCenter.subtract(contactPoint); // order matters!
+        ballCenterValues.add(new Vector(40, 75));
+        contactPoints.add(new Vector(30.077, 57.6351));
+        targetPositions.add(new Vector(22.0599, 44.5019));
+        expectedNewPosition.add(new Vector(31.98, 61.87));
 
-        // now we calculate the reachable position
-        Vector newPos = targetPosition.add(diff);
+        ballCenterValues.add(new Vector(40, 12));
+        contactPoints.add(new Vector(19, 20));
+        targetPositions.add(new Vector(-52.8, -19.2));
+        expectedNewPosition.add(new Vector(-31.8, -27.2));
 
-        Vector expectedNewPos = new Vector(32.04, 61.3);
+        if (ballCenterValues.size() != contactPoints.size() || contactPoints.size() != targetPositions.size() || targetPositions.size() != expectedNewPosition.size()) {
+            Assert.fail();
+        }
 
-        Assert.assertEquals(expectedNewPos.getX(), newPos.getX(), 1);
-        Assert.assertEquals(expectedNewPos.getY(), newPos.getY(), 1);
+        for (int i = 0; i < ballCenterValues.size(); i++) {
+            Vector ballCenter = ballCenterValues.get(i);
+            Vector contactPoint = contactPoints.get(i);
+            Vector targetPosition = targetPositions.get(i);
+            Vector expectedNewPos = expectedNewPosition.get(i);
+
+            Vector diff = ballCenter.subtract(contactPoint); // order matters!
+
+            Vector newPos = targetPosition.add(diff);
+
+            Assert.assertEquals(expectedNewPos.getX(), newPos.getX(), 0.01);
+            Assert.assertEquals(expectedNewPos.getY(), newPos.getY(), 0.01);
+        }
     }
 }

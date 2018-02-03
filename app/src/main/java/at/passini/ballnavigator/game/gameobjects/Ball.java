@@ -139,8 +139,7 @@ public class Ball extends GameObject {
         // should calculate to point that would touch another object
         // tip: take a vector from location to direction. then make a unit vector out of it. then multiply that by the radius :)
         Vector ballPosition = new Vector(this.getAbsoluteX(), this.getAbsoluteY());
-        Vector direction = vDirectionAbsolute.subtract(ballPosition);
-        Vector uDirection = direction.getUnitVector();
+        Vector uDirection = ballPosition.getUnitVector();
         return ballPosition.add(uDirection.multiplyWithScalar(radius));
     }
 

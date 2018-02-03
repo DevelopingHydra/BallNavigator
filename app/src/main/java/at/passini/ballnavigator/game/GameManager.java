@@ -286,9 +286,8 @@ public class GameManager {
     public double timeNeededToMoveDistance(double distanceToTravel, Vector vSpeed) {
         // here we specify how long traveling a distance takes
         // t = s / v
-        double v = vSpeed.getLength();
-        double timeNeeded = distanceToTravel / v;
-        return timeNeeded * 1000;
+        double velocity = vSpeed.getLength();
+        return distanceToTravel / velocity;
     }
 
     /**
@@ -301,7 +300,7 @@ public class GameManager {
     public double reachableDistanceWithinTime(double timeToTravel, Vector vSpeed) {
         // s = v * t
         double v = vSpeed.getLength();
-        return (v * timeToTravel / 1000); // we travel per second
+        return v * timeToTravel;
     }
 
     /* swipe handling and drawing */
