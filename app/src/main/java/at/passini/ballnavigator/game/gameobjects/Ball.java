@@ -5,25 +5,24 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
-import at.passini.ballnavigator.game.GameManager;
 import at.passini.ballnavigator.game.Helper.Vector;
 
 /**
  * Created by xeniu on 29.01.2018.
  */
 
-public class Ball extends GameObject {
+public class Ball extends GameObject implements DrawableObject {
 
-    private Vector vDirectionAbsolute, vDirectionGrid;
+    private Vector vDirectionAbsolute, vAbsolutePosition;
     private int radius;
 
     private Paint pColor;
 
-    public Ball(Vector vPosition, Vector vDirectionGrid) {
-        setDirectionGrid(vDirectionGrid);
+    public Ball(Vector vPosition, Vector vDirectionAbsolute) {
+        this.vDirectionAbsolute = vDirectionAbsolute;
 
         radius = 20;// absolute value! should be called before setting the absolutePosition()
-        this.setGridPosition(vPosition);
+        this.vAbsolutePosition = vPosition;
 
         pColor = new Paint();
         pColor.setColor(Color.DKGRAY);
@@ -32,8 +31,18 @@ public class Ball extends GameObject {
 
     @Override
     public void onDrawUpdate(Canvas canvas, long timePassed) {
-        canvas.drawOval(rBoxAbsolute.left, rBoxAbsolute.top, rBoxAbsolute.right, rBoxAbsolute.bottom, this.pColor);
-        Log.d("ball", "drawing at " + rBoxAbsolute.toShortString() + " with speed: " + this.vDirectionAbsolute.toString());
+        float left = (float) vAbsolutePosition.getX() - radius;
+        float top = (float) vAbsolutePosition.getY() - radius;
+        float right = (float) vAbsolutePosition.getX() + 2 * radius;
+        float bottom = (float) vAbsolutePosition.getY() + 2 * radius;
+        canvas.drawOval(left, top, right, bottom, this.pColor);
+        Log.d("ball", "drawing at " + this.vAbsolutePosition.toString() + " with speed: " + this.vDirectionAbsolute.toString());
+    }
+
+    public boolean isAbsolutePointWithinObject(Vector vPoint) {
+        Vector ballCenter = this.vAbsolutePosition;
+        Vector vTargetToBallPos = ballCenter.subtract(vPoint);
+        return vTargetToBallPos.getLength() <= radius;
     }
 
     public boolean isMovingUp() {
@@ -54,66 +63,36 @@ public class Ball extends GameObject {
 
     public void flipDirectionX() {
         this.vDirectionAbsolute.setX(-this.vDirectionAbsolute.getX());
-        this.vDirectionGrid.setX(-this.vDirectionGrid.getX());
     }
 
     public void flipDirectionY() {
         this.vDirectionAbsolute.setY(-this.vDirectionAbsolute.getY());
-        this.vDirectionGrid.setY(-this.vDirectionGrid.getY());
     }
 
 
-    public void moveToAbsolutePosition(Vector targetPosition){
-        // first we calculate the vector from the ball center to the contactPoint
-        Vector ballCenter = new Vector(getAbsoluteX(),getAbsoluteY());
-        Vector contactPoint=this.getAbsoluteContactPoint();
-        Vector diff=ballCenter.subtract(contactPoint); // order matters!
+    public void moveToAbsolutePosition(Vector targetPosition) {
+        if (isAbsolutePointWithinObject(targetPosition)) {
+            this.vAbsolutePosition = targetPosition;
+        } else {
+            // first we calculate the vector from the ball center to the contactPoint
+            Vector ballCenter = this.vAbsolutePosition;
+            Vector contactPoint = this.getAbsoluteContactPoint();
+            Vector diff = ballCenter.subtract(contactPoint); // order matters!
 
-        // now we calculate the reachable position
-        Vector newPos=targetPosition.add(diff);
+            // now we calculate the reachable position
+            Vector newPos = targetPosition.add(diff);
 
-        // now we move the ball to the location
-        this.setAbsolutePosition(newPos);
+            // now we move the ball to the location
+            this.vAbsolutePosition=newPos;
+        }
     }
 
-    private void setAbsolutePosition(Vector vPointNewPosition) {
-        double posX =  vPointNewPosition.getX() - this.radius;
-        double posY =  vPointNewPosition.getY() - this.radius;
-        double posRight = posX + this.radius;
-        double posBottom = posY + this.radius;
-
-        setAbsoluteX(posX);
-        setAbsoluteY(posY);
-        setAbsoluteRight(posRight);
-        setAbsoluteBottom(posBottom);
+    public void setvAbsolutePosition(Vector vAbsolutePosition) {
+        this.vAbsolutePosition = vAbsolutePosition;
     }
 
-
-    private void setGridPosition(Vector gridPosition) {
-        // we have a hard time to sset the radius using grid values
-        // therefore we translate them to absolute values and then set everything
-        Vector absolutePosition=GameManager.getInstance().getAbsoluteLocation(gridPosition);
-        setAbsolutePosition(absolutePosition);
-    }
-
-    @Override
-    public int getAbsoluteX() {
-        return this.rBoxAbsolute.centerX();
-    }
-
-    @Override
-    public int getAbsoluteY() {
-        return this.rBoxAbsolute.centerY();
-    }
-
-    @Override
-    public int getGridX() {
-        return this.rBoxGrid.centerX();
-    }
-
-    @Override
-    public int getGridY() {
-        return this.rBoxGrid.centerY();
+    public Vector getvAbsolutePosition() {
+        return vAbsolutePosition;
     }
 
     public Vector getAbsoluteDirectionVector() {
@@ -122,25 +101,18 @@ public class Ball extends GameObject {
 
     public void setDirectionAbsolute(Vector vDirectionAbsolute) {
         this.vDirectionAbsolute = vDirectionAbsolute;
-        vDirectionGrid = GameManager.getInstance().getGridLocation(vDirectionAbsolute);
-    }
-
-    public void setDirectionGrid(Vector vDirectionGrid) {
-        this.vDirectionGrid = vDirectionGrid;
-        vDirectionAbsolute = GameManager.getInstance().getAbsoluteLocation(vDirectionGrid);
     }
 
     /**
-     * todo make the correct calculation
-     *
      * @return
      */
     public Vector getAbsoluteContactPoint() {
         // should calculate to point that would touch another object
-        // tip: take a vector from location to direction. then make a unit vector out of it. then multiply that by the radius :)
-        Vector ballPosition = new Vector(this.getAbsoluteX(), this.getAbsoluteY());
-        Vector uDirection = ballPosition.getUnitVector();
-        return ballPosition.add(uDirection.multiplyWithScalar(radius));
+        // tip: take a vector from location to direction. then make a unit vector out of it. then multiply that by the radius
+        Vector uDirection = vDirectionAbsolute.getUnitVector();
+        Vector ballCenter = this.vAbsolutePosition;
+        return ballCenter.add(uDirection.multiplyWithScalar(radius));
     }
+
 
 }

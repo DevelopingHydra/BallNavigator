@@ -5,13 +5,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-import at.passini.ballnavigator.game.GameManager;
-
 /**
  * Created by xeniu on 29.01.2018.
  */
 
-public class Brick extends GameObject {
+public class Brick extends RectGameObject {
     private int hp;
 
     private Paint pColor;

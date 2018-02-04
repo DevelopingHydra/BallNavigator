@@ -45,11 +45,15 @@ public class CDTest {
         ballRadiusValues.add(3);
         expectedPoints.add(new Vector(7.28, 7.46));
 
-
         vDirectoinAbsoluteValues.add(new Vector(-4, -4));
         ballCenterValues.add(new Vector(4, 5));
         ballRadiusValues.add(1);
         expectedPoints.add(new Vector(3.29, 4.29));
+
+        vDirectoinAbsoluteValues.add(new Vector(.001, -.001));
+        ballCenterValues.add(new Vector(60, 105));
+        ballRadiusValues.add(20);
+        expectedPoints.add(new Vector(74.14, 90.86));
 
 
         if (vDirectoinAbsoluteValues.size() != ballCenterValues.size() || ballCenterValues.size() != ballRadiusValues.size() || ballRadiusValues.size() != expectedPoints.size()) {
@@ -60,8 +64,9 @@ public class CDTest {
 
             Vector vDirectionAbsolute = vDirectoinAbsoluteValues.get(i);
             Vector uDirection = vDirectionAbsolute.getUnitVector();
-            Vector contactPoint = ballCenterValues.get(i)
-                    .add(uDirection.multiplyWithScalar(ballRadiusValues.get(i)));
+            Vector ballCenter = ballCenterValues.get(i);
+            int radius = ballRadiusValues.get(i);
+            Vector contactPoint = ballCenter.add(uDirection.multiplyWithScalar(radius));
 
             Assert.assertEquals(expectedPoints.get(i).getX(), contactPoint.getX(), 0.01);
             Assert.assertEquals(expectedPoints.get(i).getY(), contactPoint.getY(), 0.01);
