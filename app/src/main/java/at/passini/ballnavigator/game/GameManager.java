@@ -36,7 +36,7 @@ public class GameManager {
     private ConcurrentLinkedQueue<GameObject> gameElements;
     private ConcurrentLinkedQueue<Ball> balls;
 
-//    private ConcurrentLinkedQueue<DrawingLine> drawingLines;
+    //    private ConcurrentLinkedQueue<DrawingLine> drawingLines;
     private DrawingLine currentDrawingLine;
     private boolean isCurrentlyDrawing;
 
@@ -108,15 +108,15 @@ public class GameManager {
         Wall right = new Wall(gridColumns, 0, gridColumns, gridRows);
         Wall bottom = new Wall(0, gridRows, gridColumns, gridRows);
 
-//        Wall testWall=new Wall(70,0,0,100);
+        Wall testWall = new Wall(70, 0, 70, 100);
         this.gameElements.add(left);
         this.gameElements.add(right);
         this.gameElements.add(top);
         this.gameElements.add(bottom);
-//        this.gameElements.add(testWall);
+        this.gameElements.add(testWall);
 
         // before map works set up ball statically
-        balls.add(new Ball(getAbsoluteLocation(new Vector(5, 10)), new Vector(.1f, 1f)));
+        balls.add(new Ball(getAbsoluteLocation(new Vector(5, 10)), new Vector(1f, 1.1f)));
     }
 
     /* collision detection */
@@ -256,22 +256,37 @@ public class GameManager {
             // change the angle of the ball
             Log.d("gm", "ball should rotate now");
 //            ball.moveToAbsolutePosition(getAbsoluteLocation(gridColumns / 2, gridRows / 2));
-            if (ball.isMovingUp() && ball.getAbsolutePosition().getY() > vPointIntersection.getY()) {
+            Vector newVector = new Vector(vPointIntersection.getX() - ball.getAbsolutePosition().getX(), ball.getAbsoluteContactPoint().getY() - vPointIntersection.getY());
+            Log.d("gm", "new Vector: " + newVector.toString());
+            double angle = Math.atan2(newVector.getY(), newVector.getX());
+            Log.d("gm", "angle " + angle);
+
+            if ((angle > Math.PI / 4 && angle < Math.PI * 3 / 4) || (angle < -Math.PI / 4 && angle > -Math.PI * 3 / 4)) {
                 ball.flipDirectionY();
-                Log.d("gm", "ball is moving up and flipping Y");
-            }
-            if (ball.isMovingDown() && ball.getAbsolutePosition().getY() < vPointIntersection.getY()) {
-                ball.flipDirectionY();
-                Log.d("gm", "ball is moving down and flipping Y");
-            }
-            if (ball.isMovingLeft() && ball.getAbsolutePosition().getX() > vPointIntersection.getX()) {
+                Log.d("gm", "flipping Y");
+            } else {
                 ball.flipDirectionX();
-                Log.d("gm", "ball is moving left and flipping X");
+                Log.d("gm", "flipping X");
             }
-            if (ball.isMovingRight() && ball.getAbsolutePosition().getX() < vPointIntersection.getX()) {
-                ball.flipDirectionX();
-                Log.d("gm", "ball is moving right and flipping X");
-            }
+
+
+//
+//            if (ball.isMovingUp() && ball.getAbsolutePosition().getY() > vPointIntersection.getY()) {
+//                ball.flipDirectionY();
+//                Log.d("gm", "ball is moving up and flipping Y");
+//            }
+//            if (ball.isMovingDown() && ball.getAbsolutePosition().getY() < vPointIntersection.getY()) {
+//                ball.flipDirectionY();
+//                Log.d("gm", "ball is moving down and flipping Y");
+//            }
+//            if (ball.isMovingLeft() && ball.getAbsolutePosition().getX() > vPointIntersection.getX()) {
+//                ball.flipDirectionX();
+//                Log.d("gm", "ball is moving left and flipping X");
+//            }
+//            if (ball.isMovingRight() && ball.getAbsolutePosition().getX() < vPointIntersection.getX()) {
+//                ball.flipDirectionX();
+//                Log.d("gm", "ball is moving right and flipping X");
+//            }
 
             // now return
             return timeNeeded;
@@ -371,13 +386,14 @@ public class GameManager {
     /* swipe handling and drawing */
 
     private void removeUnusedDrawingLines() {
-        for (GameObject gameObject:this.gameElements) {
-            if(gameObject instanceof DrawingLine){
-            DrawingLine drawingLine= (DrawingLine) gameObject;
-            if (drawingLine.isDead()) {
-                this.gameElements.remove(drawingLine);
+        for (GameObject gameObject : this.gameElements) {
+            if (gameObject instanceof DrawingLine) {
+                DrawingLine drawingLine = (DrawingLine) gameObject;
+                if (drawingLine.isDead()) {
+                    this.gameElements.remove(drawingLine);
+                }
             }
-        }}
+        }
     }
 
     public void startSwipe(float touchX, float touchY, long timePassed) {
