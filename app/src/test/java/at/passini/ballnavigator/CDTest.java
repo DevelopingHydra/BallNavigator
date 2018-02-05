@@ -15,7 +15,7 @@ import at.passini.ballnavigator.game.Helper.Vector;
 public class CDTest {
     @Test
     public void timeNeededToMoveTo() {
-        double distance = 100;
+        float distance = 100;
         Vector v = new Vector(10, 10);
         double timeNeeded = GameManager.getInstance().timeNeededToMoveDistance(distance, v);
 
@@ -32,28 +32,28 @@ public class CDTest {
         vDirectoinAbsoluteValues.add(new Vector(10, 10));
         ballCenterValues.add(new Vector(5, 5));
         ballRadiusValues.add(2);
-        expectedPoints.add(new Vector(6.41, 6.41));
+        expectedPoints.add(new Vector(6.41f, 6.41f));
 
         vDirectoinAbsoluteValues.add(new Vector(10, -10));
         ballCenterValues.add(new Vector(5, 5));
         ballRadiusValues.add(2);
-        expectedPoints.add(new Vector(6.41, 3.59));
+        expectedPoints.add(new Vector(6.41f, 3.59f));
 
 
         vDirectoinAbsoluteValues.add(new Vector(-14, 20));
         ballCenterValues.add(new Vector(9, 5));
         ballRadiusValues.add(3);
-        expectedPoints.add(new Vector(7.28, 7.46));
+        expectedPoints.add(new Vector(7.28f, 7.46f));
 
         vDirectoinAbsoluteValues.add(new Vector(-4, -4));
         ballCenterValues.add(new Vector(4, 5));
         ballRadiusValues.add(1);
-        expectedPoints.add(new Vector(3.29, 4.29));
+        expectedPoints.add(new Vector(3.29f, 4.29f));
 
-        vDirectoinAbsoluteValues.add(new Vector(.001, -.001));
+        vDirectoinAbsoluteValues.add(new Vector(.001f, -.001f));
         ballCenterValues.add(new Vector(60, 105));
         ballRadiusValues.add(20);
-        expectedPoints.add(new Vector(74.14, 90.86));
+        expectedPoints.add(new Vector(74.14f, 90.86f));
 
 
         if (vDirectoinAbsoluteValues.size() != ballCenterValues.size() || ballCenterValues.size() != ballRadiusValues.size() || ballRadiusValues.size() != expectedPoints.size()) {
@@ -83,14 +83,14 @@ public class CDTest {
         ArrayList<Vector> expectedNewPosition = new ArrayList<>();
 
         ballCenterValues.add(new Vector(40, 75));
-        contactPoints.add(new Vector(30.077, 57.6351));
-        targetPositions.add(new Vector(22.0599, 44.5019));
-        expectedNewPosition.add(new Vector(31.98, 61.87));
+        contactPoints.add(new Vector(30.077f, 57.6351f));
+        targetPositions.add(new Vector(22.0599f, 44.5019f));
+        expectedNewPosition.add(new Vector(31.98f, 61.87f));
 
         ballCenterValues.add(new Vector(40, 12));
         contactPoints.add(new Vector(19, 20));
-        targetPositions.add(new Vector(-52.8, -19.2));
-        expectedNewPosition.add(new Vector(-31.8, -27.2));
+        targetPositions.add(new Vector(-52.8f, -19.2f));
+        expectedNewPosition.add(new Vector(-31.8f, -27.2f));
 
         if (ballCenterValues.size() != contactPoints.size() || contactPoints.size() != targetPositions.size() || targetPositions.size() != expectedNewPosition.size()) {
             Assert.fail();

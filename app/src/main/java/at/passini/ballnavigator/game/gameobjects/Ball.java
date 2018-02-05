@@ -83,7 +83,7 @@ public class Ball extends GameObject implements DrawableObject {
             Vector newPos = targetPosition.add(diff);
 
             // now we move the ball to the location
-            this.vAbsolutePosition=newPos;
+            this.vAbsolutePosition = newPos;
         }
     }
 
@@ -91,7 +91,7 @@ public class Ball extends GameObject implements DrawableObject {
         this.vAbsolutePosition = vAbsolutePosition;
     }
 
-    public Vector getvAbsolutePosition() {
+    public Vector getAbsolutePosition() {
         return vAbsolutePosition;
     }
 

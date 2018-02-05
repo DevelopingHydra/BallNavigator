@@ -62,7 +62,7 @@ public class LineTest {
 
         // AD are parallel so they do never intersect
         vPointIntersect = lineA.intersectWithOtherLine(lineD);
-        idealIntersectionPoint = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
+        idealIntersectionPoint = new Vector(Float.MAX_VALUE, Float.MAX_VALUE);
         Assert.assertEquals(idealIntersectionPoint.getX(), vPointIntersect.getX(), 0.1);
         Assert.assertEquals(idealIntersectionPoint.getY(), vPointIntersect.getY(), 0.1);
     }
@@ -83,19 +83,19 @@ public class LineTest {
 
         // BC do not intersect
         vPointIntersect = lineB.intersectWithOtherLine(lineC);
-        idealIntersectionPoint = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
+        idealIntersectionPoint = new Vector(Float.MAX_VALUE, Float.MAX_VALUE);
         Assert.assertEquals(idealIntersectionPoint.getX(), vPointIntersect.getX(), 0.1);
         Assert.assertEquals(idealIntersectionPoint.getY(), vPointIntersect.getY(), 0.1);
 
         // AC do not intersect
         vPointIntersect = lineA.intersectWithOtherLine(lineC);
-        idealIntersectionPoint = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
+        idealIntersectionPoint = new Vector(Float.MAX_VALUE, Float.MAX_VALUE);
         Assert.assertEquals(idealIntersectionPoint.getX(), vPointIntersect.getX(), 0.1);
         Assert.assertEquals(idealIntersectionPoint.getY(), vPointIntersect.getY(), 0.1);
 
         // AD are parallel so they do never intersect
         vPointIntersect = lineA.intersectWithOtherLine(lineD);
-        idealIntersectionPoint = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
+        idealIntersectionPoint = new Vector(Float.MAX_VALUE, Float.MAX_VALUE);
         Assert.assertEquals(idealIntersectionPoint.getX(), vPointIntersect.getX(), 0.1);
         Assert.assertEquals(idealIntersectionPoint.getY(), vPointIntersect.getY(), 0.1);
     }
@@ -111,17 +111,24 @@ public class LineTest {
         // second rectLine
 
         ballRays.add(new Line(new Vector(69, 40), new Vector(6200, 10000)));
-        rectLines.add(new Line(new Vector(10,1700),new Vector(0,1700)));
+        rectLines.add(new Line(new Vector(10, 1700), new Vector(0, 1700)));
         expectedToIntersect.add(false);
 
-        ballRays.add(new Line(new Vector(33,27), new Vector(-96000,-163831)));
+        ballRays.add(new Line(new Vector(33, 27), new Vector(-96000, -163831)));
         rectLines.add(new Line(new Vector(0, 0), new Vector(1000, 0)));
         expectedToIntersect.add(true);
 
-        ballRays.add(new Line(new Vector(33,27), new Vector(-96000,-163831)));
+        ballRays.add(new Line(new Vector(33, 27), new Vector(-96000, -163831)));
         rectLines.add(new Line(new Vector(0, 0), new Vector(1000, 0)));
         expectedToIntersect.add(true);
 
+        ballRays.add(new Line(new Vector(500, 850), new Vector(7806.9f, 1580.6f)));
+        rectLines.add(new Line(new Vector(1000, 0), new Vector(1000, 1700)));
+        expectedToIntersect.add(true);
+
+        ballRays.add(new Line(new Vector(500, 850), new Vector(7869.900743801262f, 1586.9900853621343f)));
+        rectLines.add(new Line(new Vector(1000, 0), new Vector(1000, 1700)));
+        expectedToIntersect.add(true);
 
         for (int i = 0; i < ballRays.size(); i++) {
             Line ballRay = ballRays.get(i);
@@ -130,6 +137,9 @@ public class LineTest {
             boolean shouldIntersect = expectedToIntersect.get(i);
 
             Vector vPointIntersect = ballRay.intersectWithOtherLine(rectLine);
+
+            System.out.println("ballRay " + ballRay.toString() + " and rectLine " + rectLine.toString()
+                    + "\n\tshould intersect[" + shouldIntersect + "] and intersect at: " + vPointIntersect.toString() + "\n");
 
             if (shouldIntersect) {
                 Assert.assertTrue(vPointIntersect.getX() < Double.MAX_VALUE);

@@ -31,11 +31,12 @@ public class GameView extends SurfaceView {
             }
 
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            }
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-                running =false;
+                running = false;
             }
         });
     }
@@ -68,20 +69,22 @@ public class GameView extends SurfaceView {
     }
 
     private void updateCanvas() {
-       Canvas c = holder.lockCanvas();
-       myDraw(c);
-       holder.unlockCanvasAndPost(c);
+        Canvas c = holder.lockCanvas();
+        myDraw(c);
+        holder.unlockCanvasAndPost(c);
 
     }
 
-    private void myDraw(Canvas canvas){
-        long currentTime = System.currentTimeMillis();
-        timePassed = currentTime - timeLastUpdate;
-        timeLastUpdate = currentTime;
-        GameManager.getInstance().onDrawUpdate(canvas, timePassed);
+    private void myDraw(Canvas canvas) {
+        if (canvas != null) { // todo happens when using 'back' btn
+            long currentTime = System.currentTimeMillis();
+            timePassed = currentTime - timeLastUpdate;
+            timeLastUpdate = currentTime;
+            GameManager.getInstance().onDrawUpdate(canvas, timePassed);
+        }
     }
 
-    private void startGame(){
+    private void startGame() {
         running = true;
         runGame();
         GameManager.getInstance().startGame();

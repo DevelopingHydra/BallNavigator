@@ -103,8 +103,8 @@ public class GameManager {
         // todo Map.getGameObjects
 
         // add the walls to the gameObject list
-        Wall left = new Wall(0, 0, 0, gridRows );
-        Wall top = new Wall(0, 0, gridColumns , 0);
+        Wall left = new Wall(0, 0, 0, gridRows);
+        Wall top = new Wall(0, 0, gridColumns, 0);
         Wall right = new Wall(gridColumns, 0, gridColumns, gridRows);
         Wall bottom = new Wall(0, gridRows, gridColumns, gridRows);
 
@@ -116,15 +116,15 @@ public class GameManager {
 //        this.gameElements.add(testWall);
 
         // before map works set up ball statically
-        balls.add(new Ball(getAbsoluteLocation(new Vector(5,10)), new Vector(+0.1f, 0f)));
+        balls.add(new Ball(getAbsoluteLocation(new Vector(5, 10)), new Vector(.1f, 1f)));
     }
 
     /* collision detection */
 
-    private synchronized void updatePositions(double timePassed) {
+    private synchronized void updatePositions(float timePassed) {
         // this Hashmap records all the balls that can still move
         // it saves the ball and the time remaining
-        ConcurrentHashMap<Ball, Double> ballsThatCanStillMove = new ConcurrentHashMap<>();
+        ConcurrentHashMap<Ball, Float> ballsThatCanStillMove = new ConcurrentHashMap<>();
 
         for (Ball ball : this.balls) {
             ballsThatCanStillMove.put(ball, timePassed);
@@ -133,10 +133,10 @@ public class GameManager {
         collisionDetectionBalls(ballsThatCanStillMove);
     }
 
-    private void collisionDetectionBalls(ConcurrentHashMap<Ball, Double> ballsThatCanStillMove) {
-        for (HashMap.Entry<Ball, Double> entry : ballsThatCanStillMove.entrySet()) {
+    private void collisionDetectionBalls(ConcurrentHashMap<Ball, Float> ballsThatCanStillMove) {
+        for (HashMap.Entry<Ball, Float> entry : ballsThatCanStillMove.entrySet()) {
             Ball ball = entry.getKey();
-            double timeRemaining = entry.getValue();
+            float timeRemaining = entry.getValue();
             // get the line of the ball
             Vector ballPosition = ball.getAbsoluteContactPoint();
 //            Vector ballNewPosition = new Vector(ball.getDirectionX() + ball.getPosX(), ball.getDirectionY() + ball.getPosY());
@@ -148,7 +148,7 @@ public class GameManager {
             for (GameObject gameObject : this.gameElements) {
                 double timeToMove = 0;
                 if (gameObject instanceof RectGameObject) {
-                    RectGameObject rectGameObject= (RectGameObject) gameObject;
+                    RectGameObject rectGameObject = (RectGameObject) gameObject;
                     timeToMove = collisionDetectionRect(timeRemaining, rectGameObject.getAbsoluteRectangle(), gameObject, ballRay, ball);
 
                 } else if (gameObject instanceof Wall) {
@@ -234,7 +234,23 @@ public class GameManager {
 
             // change the angle of the ball
             Log.d("gm", "ball should rotate now");
-            ball.moveToAbsolutePosition(getAbsoluteLocation(gridColumns / 2, gridRows / 2));
+//            ball.moveToAbsolutePosition(getAbsoluteLocation(gridColumns / 2, gridRows / 2));
+            if (ball.isMovingUp() && ball.getAbsolutePosition().getY() > vPointIntersection.getY()) {
+                ball.flipDirectionY();
+                Log.d("gm", "ball is moving up and flipping Y");
+            }
+            if (ball.isMovingDown() && ball.getAbsolutePosition().getY() < vPointIntersection.getY()) {
+                ball.flipDirectionY();
+                Log.d("gm", "ball is moving down and flipping Y");
+            }
+            if (ball.isMovingLeft() && ball.getAbsolutePosition().getX() > vPointIntersection.getX()) {
+                ball.flipDirectionX();
+                Log.d("gm", "ball is moving left and flipping X");
+            }
+            if (ball.isMovingRight() && ball.getAbsolutePosition().getX() < vPointIntersection.getX()) {
+                ball.flipDirectionX();
+                Log.d("gm", "ball is moving right and flipping X");
+            }
 
             // now return
             return timeNeeded;
@@ -259,11 +275,11 @@ public class GameManager {
         if (gameObject instanceof Ball) {
             Ball b = (Ball) gameObject;
             vPointGameObjectPosition = b.getAbsoluteContactPoint();
-        } else if(gameObject instanceof RectGameObject){
-            RectGameObject rectGameObject= (RectGameObject) gameObject;
+        } else if (gameObject instanceof RectGameObject) {
+            RectGameObject rectGameObject = (RectGameObject) gameObject;
             vPointGameObjectPosition = new Vector(rectGameObject.getAbsoluteX(), rectGameObject.getAbsoluteY());
-        }else {
-            vPointGameObjectPosition=new Vector(Double.MAX_VALUE,Double.MAX_VALUE);
+        } else {
+            vPointGameObjectPosition = new Vector(Float.MAX_VALUE, Float.MAX_VALUE);
         }
         double distanceToTarget = vPointGameObjectPosition.getDistanceTo(vPointTarget);
 
@@ -288,8 +304,8 @@ public class GameManager {
         if (gameObject instanceof Ball) {
             Ball ball = (Ball) gameObject;
             ball.moveToAbsolutePosition(vPointToMoveTo);
-        } else if(gameObject instanceof RectGameObject) {
-            RectGameObject rectGameObject= (RectGameObject) gameObject;
+        } else if (gameObject instanceof RectGameObject) {
+            RectGameObject rectGameObject = (RectGameObject) gameObject;
             rectGameObject.setAbsoluteX((int) vPointToMoveTo.getX());
             rectGameObject.setAbsoluteY((int) vPointToMoveTo.getY());
         }
@@ -365,11 +381,11 @@ public class GameManager {
 
     /* grid handling */
 
-    public double getAbsoluteX(int gridX) {
+    public float getAbsoluteX(int gridX) {
         return displayUnitX * gridX;
     }
 
-    public double getAbsoluteY(int gridY) {
+    public float getAbsoluteY(int gridY) {
         return displayUnitY * gridY;
     }
 
