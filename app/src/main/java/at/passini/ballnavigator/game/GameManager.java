@@ -36,7 +36,7 @@ public class GameManager {
     private ConcurrentLinkedQueue<GameObject> gameElements;
     private ConcurrentLinkedQueue<Ball> balls;
 
-    private ConcurrentLinkedQueue<DrawingLine> drawingLines;
+//    private ConcurrentLinkedQueue<DrawingLine> drawingLines;
     private DrawingLine currentDrawingLine;
     private boolean isCurrentlyDrawing;
 
@@ -47,7 +47,7 @@ public class GameManager {
         this.deviceWidth = 0;
         this.gameElements = new ConcurrentLinkedQueue<>();
         this.balls = new ConcurrentLinkedQueue<>();
-        this.drawingLines = new ConcurrentLinkedQueue<>();
+//        this.drawingLines = new ConcurrentLinkedQueue<>();
         this.isCurrentlyDrawing = false;
     }
 
@@ -87,9 +87,9 @@ public class GameManager {
         }
 
 //        Log.d("gm","num drawing lines: "+this.drawingLines.size());
-        for (DrawingLine lines : drawingLines) {
-            lines.onDrawUpdate(canvas, timePassed);
-        }
+//        for (DrawingLine lines : drawingLines) {
+//            lines.onDrawUpdate(canvas, timePassed);
+//        }
     }
 
     /* start game */
@@ -98,7 +98,7 @@ public class GameManager {
         // reset everything
         this.balls.clear();
         this.gameElements.clear();
-        this.drawingLines.clear();
+//        this.drawingLines.clear();
 
         // todo Map.getGameObjects
 
@@ -154,6 +154,9 @@ public class GameManager {
                 } else if (gameObject instanceof Wall) {
                     Wall wall = (Wall) gameObject;
                     timeToMove = collisionDetectionLine(timeRemaining, wall.getAbsolute(), gameObject, ballRay, ball);
+                } else if (gameObject instanceof DrawingLine) {
+                    DrawingLine drawingLine = (DrawingLine) gameObject;
+                    timeToMove = collisionDetectionDrawingLine(timeRemaining, drawingLine, ballRay, ball);
                 }
                 if (timeToMove > 0) {
                     Log.d("gm", "collision with wall or brick");
@@ -191,6 +194,24 @@ public class GameManager {
             collisionDetectionBalls(ballsThatCanStillMove);
         }
 
+    }
+
+    private double collisionDetectionDrawingLine(double timeRemaining, DrawingLine drawingLine, Line ballRay, Ball ball) {
+        Vector lastPos = null;
+        for (Vector point : drawingLine.getPositions()) {
+            if (lastPos != null) {
+                Line currLine = new Line(lastPos, point);
+                double timeNeeded = collisionDetectionLine(timeRemaining, currLine, drawingLine, ballRay, ball);
+                if (timeNeeded > 0) {
+                    return timeNeeded;
+                }
+            }
+            lastPos = point;
+        }
+
+        // seems like there was no collisions
+        // therefore the time it took to move (it didn't move) is 0
+        return 0;
     }
 
     /**
@@ -350,18 +371,20 @@ public class GameManager {
     /* swipe handling and drawing */
 
     private void removeUnusedDrawingLines() {
-        for (DrawingLine line : this.drawingLines) {
-            if (line.isDead()) {
-                this.drawingLines.remove(line);
+        for (GameObject gameObject:this.gameElements) {
+            if(gameObject instanceof DrawingLine){
+            DrawingLine drawingLine= (DrawingLine) gameObject;
+            if (drawingLine.isDead()) {
+                this.gameElements.remove(drawingLine);
             }
-        }
+        }}
     }
 
     public void startSwipe(float touchX, float touchY, long timePassed) {
         DrawingLine local = new DrawingLine(timePassed);
         local.addPosition(new Vector(touchX, touchY));
 
-        this.drawingLines.add(local);
+        this.gameElements.add(local);
         currentDrawingLine = local;
         this.isCurrentlyDrawing = true;
     }

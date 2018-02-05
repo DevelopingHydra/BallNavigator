@@ -15,7 +15,7 @@ import at.passini.ballnavigator.game.Helper.Vector;
  * Created by xeniu on 29.01.2018.
  */
 
-public class DrawingLine implements DrawableObject {
+public class DrawingLine extends GameObject implements DrawableObject {
     private ConcurrentLinkedQueue<LinePoint> positions;
 
     private Paint paintLine;
@@ -53,6 +53,10 @@ public class DrawingLine implements DrawableObject {
                 }
             }
         }
+    }
+
+    public ConcurrentLinkedQueue<LinePoint> getPositions() {
+        return positions;
     }
 
     public boolean isDead() {
