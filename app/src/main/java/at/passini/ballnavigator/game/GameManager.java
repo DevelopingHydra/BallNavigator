@@ -113,14 +113,14 @@ public class GameManager {
         Wall bottom = new Wall(0, gridRows, gridColumns, gridRows);
 
         Wall testWall = new Wall(70, 0, 70, 100);
-        this.gameElements.add(left);
+//        this.gameElements.add(left);
         this.gameElements.add(right);
-        this.gameElements.add(top);
-        this.gameElements.add(bottom);
-        this.gameElements.add(testWall);
+//        this.gameElements.add(top);
+//        this.gameElements.add(bottom);
+//        this.gameElements.add(testWall);
 
         // before map works set up ball statically
-        balls.add(new Ball(getAbsoluteLocation(new Vector(5, 10)), new Vector(1f, 1.1f)));
+        balls.add(new Ball(getAbsoluteLocation(new Vector(5, 10)), new Vector(1, 0)));
     }
 
     /* collision detection */
@@ -502,7 +502,9 @@ public class GameManager {
         this.displayUnitX = this.deviceWidth / this.gridColumns;
         this.displayUnitY = this.deviceHeight / this.gridRows;
 
-        Log.e("gm", "resize everything!!!");
+        for(GameObject gameObject:this.gameElements){
+            gameObject.resizeAbsolute();
+        }
     }
 
     public void setDeviceWidth(int deviceWidth) {

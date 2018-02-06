@@ -70,6 +70,11 @@ public class Ball extends GameObject implements DrawableObject {
     }
 
     @Override
+    public void onHit(Ball ball) {
+        // well :)
+    }
+
+    @Override
     public void moveToAbsoluteLocation(Vector targetPosition) {
         if (isAbsolutePointWithinObject(targetPosition)) {
             this.vAbsolutePosition = targetPosition;
@@ -93,6 +98,11 @@ public class Ball extends GameObject implements DrawableObject {
 
     public Vector getAbsolutePosition() {
         return vAbsolutePosition;
+    }
+
+    @Override
+    public void resizeAbsolute() {
+        // todo
     }
 
     public Vector getAbsoluteDirectionVector() {

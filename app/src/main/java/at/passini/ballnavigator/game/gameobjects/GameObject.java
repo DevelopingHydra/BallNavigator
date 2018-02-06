@@ -8,16 +8,18 @@ import at.passini.ballnavigator.game.Helper.Vector;
 
 public abstract class GameObject implements DrawableObject {
     protected int rotation;
-    protected boolean isDestructable;
+    protected boolean destructable;
 
-    public void onHit(Ball ball) {
-        // subclass can implement this
-    }
-    public void moveToAbsoluteLocation(Vector newPosition){
-        // subclass can implement this
-    }
-    public Vector getAbsolutePosition(){
-        return null;
+    public GameObject() {
+        rotation = 0;
+        destructable = false;
     }
 
+    public abstract void onHit(Ball ball);
+
+    public abstract void moveToAbsoluteLocation(Vector newPosition);
+
+    public abstract Vector getAbsolutePosition();
+
+    public abstract void resizeAbsolute();
 }

@@ -1,6 +1,8 @@
 package at.passini.ballnavigator.game.gameobjects;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 
 import at.passini.ballnavigator.game.GameManager;
@@ -10,14 +12,20 @@ import at.passini.ballnavigator.game.Helper.Vector;
  * Created by Benedikt on 04.02.2018.
  */
 
-public class RectGameObject extends GameObject {
+public abstract class RectGameObject extends GameObject {
     protected Rect rBoxAbsolute, rBoxGrid;
+    protected Paint pColor;
+
 
     public RectGameObject() {
         this.rotation = 0;
-        this.isDestructable = false;
+        this.destructable = false;
         this.rBoxAbsolute = new Rect(0, 0, 0, 0);
         this.rBoxGrid = new Rect(0, 0, 0, 0);
+
+        pColor = new Paint();
+        pColor.setColor(Color.MAGENTA);
+        pColor.setStyle(Paint.Style.FILL);
     }
 
     public RectGameObject(Rect gridRect) {
@@ -48,8 +56,20 @@ public class RectGameObject extends GameObject {
     }
 
     @Override
-    public void onDrawUpdate(Canvas canvas, long timePassed) {
+    public void resizeAbsolute() {
+        setGridX(getGridX());
+        setGridY(getGridY());
+        setGridRight(getGridRight());
+        setGridBottom(getGridBottom());
+    }
 
+    @Override
+    public Vector getAbsolutePosition() {
+        return new Vector(this.rBoxAbsolute.centerX(), this.rBoxAbsolute.centerY());
+    }
+    @Override
+    public void onDrawUpdate(Canvas canvas, long timePassed) {
+        canvas.drawRect(this.rBoxAbsolute, pColor);
     }
 
     public boolean isAbsolutePointWithinObject(Vector vPoint) {

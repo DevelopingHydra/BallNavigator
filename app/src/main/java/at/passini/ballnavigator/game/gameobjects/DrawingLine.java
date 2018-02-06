@@ -62,6 +62,26 @@ public class DrawingLine extends GameObject implements DrawableObject {
     public boolean isDead() {
         return this.positions.size() == 0;
     }
+
+    @Override
+    public void onHit(Ball ball) {
+
+    }
+
+    @Override
+    public void moveToAbsoluteLocation(Vector newPosition) {
+        throw new UnsupportedOperationException("a drawingLine cannot move");
+    }
+
+    @Override
+    public Vector getAbsolutePosition() {
+        throw new UnsupportedOperationException("a drawingLine has no position, it has multiple");
+    }
+
+    @Override
+    public void resizeAbsolute() {
+        // todo
+    }
 }
 
 class LinePoint extends Vector {
