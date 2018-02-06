@@ -31,7 +31,7 @@ public class GameManager {
     private final int gridRows = 100;
 
     private int deviceWidth, deviceHeight;
-    private int displayUnitX, displayUnitY;
+    private float displayUnitX, displayUnitY;
 
     private ConcurrentLinkedQueue<GameObject> gameElements;
     private ConcurrentLinkedQueue<Ball> balls;
@@ -65,7 +65,7 @@ public class GameManager {
         removeUnusedDrawingLines();
 
         // move with collision detection
-        timePassed = 50;
+//        timePassed = 50;
         updatePositions(timePassed);
 
         // draw all things
@@ -112,15 +112,15 @@ public class GameManager {
         Wall right = new Wall(gridColumns, 0, gridColumns, gridRows);
         Wall bottom = new Wall(0, gridRows, gridColumns, gridRows);
 
-        Wall testWall = new Wall(70, 0, 70, 100);
-//        this.gameElements.add(left);
+        Wall testWall = new Wall(70, 10, 30, 60);
+        this.gameElements.add(left);
         this.gameElements.add(right);
-//        this.gameElements.add(top);
-//        this.gameElements.add(bottom);
-//        this.gameElements.add(testWall);
+        this.gameElements.add(top);
+        this.gameElements.add(bottom);
+        this.gameElements.add(testWall);
 
         // before map works set up ball statically
-        balls.add(new Ball(getAbsoluteLocation(new Vector(5, 10)), new Vector(1, 0)));
+        balls.add(new Ball(getAbsoluteLocation(new Vector(5, 10)), new Vector(1, 1.5)));
     }
 
     /* collision detection */
@@ -191,13 +191,8 @@ public class GameManager {
                             Vector ballRayVector = ballNewPosition.subtract(ballPosition);
 
                             Vector newDirection = projectionVector.projectOnto(ballRayVector);
-//                            collisionPoints.put(gameObject, ballPosition.add(newDirection));
                             newBallPositionAfterCollision = ballPosition.add(newDirection);
                             collisionPoints.put(gameObject, intersectionPoint);
-//                            double ballRayLength = ballRayVector.getLength();
-//                            Vector newEndPoint = ballRayVector.getUnitVector().multiplyWithScalar(ballRayLength - ball.getAbsoluteRadius() * 1.5);
-//                            Vector newLocation = ballPosition.add(newEndPoint);
-//                            collisionPoints.put(gameObject, newLocation);
                         }
                     }
                 }
@@ -209,7 +204,7 @@ public class GameManager {
                 moveGameObjectToLocation(ball, ballNewPosition, timeRemaining, ball.getAbsoluteDirectionVector());
                 timeRemaining = 0;
             } else {
-                Log.d("gm", "colliding with num elements: " + collisionPoints.size());
+//                Log.d("gm", "colliding with num elements: " + collisionPoints.size());
                 if (collisionPoints.size() == 1) {
                     ConcurrentHashMap.Entry<GameObject, Vector> collisionEntry = collisionPoints.entrySet().iterator().next();
                     GameObject gameObject = collisionEntry.getKey();
@@ -220,21 +215,20 @@ public class GameManager {
                     double timeToMove = moveGameObjectToLocation(ball, newBallPositionAfterCollision, timeRemaining, ball.getAbsoluteDirectionVector());
 
                     // change the angle of the ball
-                    Log.d("gm", "ball should rotate now");
+//                    Log.d("gm", "ball should rotate now");
                     Vector newVector = new Vector(intersectionPoint.getX() - ball.getAbsolutePosition().getX(), ball.getAbsolutePosition().getY() - intersectionPoint.getY());
-                    Log.d("gm", "new Vector: " + newVector.toString());
                     double angle = Math.atan2(newVector.getY(), newVector.getX()); // first y, then x
-                    Log.d("gm", "angle " + angle);
+//                    Log.d("gm", "angle " + angle+" and new vector: "+newVector.toString());
 
                     if ((angle > Math.PI / 4 && angle < Math.PI * 3 / 4) || (angle < -Math.PI / 4 && angle > -Math.PI * 3 / 4)) {
                         ball.flipDirectionY();
-                        Log.d("gm", "flipping Y");
+//                        Log.d("gm", "flipping Y");
                     } else {
                         ball.flipDirectionX();
-                        Log.d("gm", "flipping X");
+//                        Log.d("gm", "flipping X");
                     }
 
-                    Log.d("gm", "collision with wall or brick");
+//                    Log.d("gm", "collision with wall or brick");
                     timeRemaining -= timeToMove;
 
                 } else {
@@ -243,6 +237,7 @@ public class GameManager {
                     // todo !!!
                     Log.e("gm", "ahhhhhhh");
                     timeRemaining = 0;
+                    ball.moveToAbsoluteLocation(getAbsoluteLocation(new Vector(50,50)));
                 }
 
             }
@@ -490,14 +485,17 @@ public class GameManager {
     }
 
     public Rect getAbsoluteRect(int gridX, int gridY, int gridRight, int gridBottom) {
-        return new Rect(displayUnitX * gridX, displayUnitY * gridY, displayUnitX * gridRight, displayUnitY * gridBottom);
+        return new Rect((int)(displayUnitX * gridX),(int)( displayUnitY * gridY),(int)( displayUnitX * gridRight),(int)( displayUnitY * gridBottom));
     }
 
     public Rect getAbsoluteRect(Rect rGrid) {
         return getAbsoluteRect(rGrid.left, rGrid.top, rGrid.right, rGrid.bottom);
     }
 
-    private void resizeEverything() {
+    /**
+     * Screen size has changed
+     */
+    private void onResizeEverything() {
         // first of all update the displayUnits
         this.displayUnitX = this.deviceWidth / this.gridColumns;
         this.displayUnitY = this.deviceHeight / this.gridRows;
@@ -509,19 +507,19 @@ public class GameManager {
 
     public void setDeviceWidth(int deviceWidth) {
         this.deviceWidth = deviceWidth;
-        resizeEverything();
+        onResizeEverything();
     }
 
     public void setDeviceHeight(int deviceHeight) {
         this.deviceHeight = deviceHeight;
-        resizeEverything();
+        onResizeEverything();
     }
 
-    public int getDisplayUnitX() {
+    public float getDisplayUnitX() {
         return displayUnitX;
     }
 
-    public int getDisplayUnitY() {
+    public float getDisplayUnitY() {
         return displayUnitY;
     }
 

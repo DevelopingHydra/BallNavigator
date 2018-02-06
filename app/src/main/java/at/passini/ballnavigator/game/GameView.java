@@ -72,7 +72,6 @@ public class GameView extends SurfaceView {
         Canvas c = holder.lockCanvas();
         myDraw(c);
         holder.unlockCanvasAndPost(c);
-
     }
 
     private void myDraw(Canvas canvas) {

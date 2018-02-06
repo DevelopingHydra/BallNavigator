@@ -21,5 +21,8 @@ public abstract class GameObject implements DrawableObject {
 
     public abstract Vector getAbsolutePosition();
 
+    /**
+     * Screen size has changed and now we have to resize the absoute values
+     */
     public abstract void resizeAbsolute();
 }

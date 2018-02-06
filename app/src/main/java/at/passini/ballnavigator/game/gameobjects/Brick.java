@@ -20,14 +20,10 @@ public class Brick extends RectGameObject {
         this.hp = hp;
     }
 
-
-
     @Override
     public void onHit(Ball ball) {
         this.hp -= 1;
     }
-
-
 
     public int getHp() {
         return hp;

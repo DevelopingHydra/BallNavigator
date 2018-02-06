@@ -36,7 +36,7 @@ public class Ball extends GameObject implements DrawableObject {
         float right = (float) vAbsolutePosition.getX() + 2 * radius;
         float bottom = (float) vAbsolutePosition.getY() + 2 * radius;
         canvas.drawOval(left, top, right, bottom, this.pColor);
-        Log.d("ball", "drawing at " + this.vAbsolutePosition.toString() + " with speed: " + this.vDirectionAbsolute.toString() + " and " + timePassed + " ms have passed");
+//        Log.d("ball", "drawing at " + this.vAbsolutePosition.toString() + " with speed: " + this.vDirectionAbsolute.toString() + " and " + timePassed + " ms have passed");
     }
 
     public boolean isAbsolutePointWithinObject(Vector vPoint) {
@@ -92,7 +92,7 @@ public class Ball extends GameObject implements DrawableObject {
         }
     }
 
-    public void setvAbsolutePosition(Vector vAbsolutePosition) {
+    private void setvAbsolutePosition(Vector vAbsolutePosition) {
         this.vAbsolutePosition = vAbsolutePosition;
     }
 
