@@ -38,6 +38,16 @@ public class RectGameObject extends GameObject {
     }
 
     @Override
+    public void moveToAbsoluteLocation(Vector newPosition) {
+        int currWidth = rBoxAbsolute.right - rBoxAbsolute.left;
+        int currHeight = rBoxAbsolute.bottom - rBoxAbsolute.top;
+        setAbsoluteX(newPosition.getX());
+        setAbsoluteY(newPosition.getY());
+        setAbsoluteRight(newPosition.getX() + currWidth);
+        setAbsoluteBottom(newPosition.getY() + currHeight);
+    }
+
+    @Override
     public void onDrawUpdate(Canvas canvas, long timePassed) {
 
     }

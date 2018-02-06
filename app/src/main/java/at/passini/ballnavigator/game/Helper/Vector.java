@@ -33,13 +33,41 @@ public class Vector {
         return new Vector(x * number, y * number);
     }
 
+    public Vector devideByScalar(double number) {
+        return new Vector(x / number, y / number);
+    }
+
     public double getLength() {
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    }
+
+    public void setLength(double newLength) {
+        Vector newVector = this.getUnitVector().multiplyWithScalar(newLength);
+        x = newVector.getX();
+        y = newVector.getY();
     }
 
     public double getDistanceTo(Vector vPoint) {
         Vector vToPoint = vPoint.subtract(this);
         return vToPoint.getLength();
+    }
+
+    public Vector getLeftNormal() {
+        return new Vector(y, -x);
+    }
+
+    public Vector getRightNormal() {
+        return new Vector(-y, x);
+    }
+
+    public double dotProduct(Vector other) {
+        return x * other.getX() + y * other.getY();
+    }
+
+    public Vector projectOnto(Vector vectorThisShouldGetProjectedOn) {
+        double scalar = vectorThisShouldGetProjectedOn.dotProduct(this);
+        scalar = scalar / vectorThisShouldGetProjectedOn.dotProduct(vectorThisShouldGetProjectedOn);
+        return vectorThisShouldGetProjectedOn.multiplyWithScalar(scalar);
     }
 
     /* getter and setter */

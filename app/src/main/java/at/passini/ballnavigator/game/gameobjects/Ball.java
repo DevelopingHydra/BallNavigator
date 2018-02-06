@@ -69,8 +69,8 @@ public class Ball extends GameObject implements DrawableObject {
         this.vDirectionAbsolute.setY(-this.vDirectionAbsolute.getY());
     }
 
-
-    public void moveToAbsolutePosition(Vector targetPosition) {
+    @Override
+    public void moveToAbsoluteLocation(Vector targetPosition) {
         if (isAbsolutePointWithinObject(targetPosition)) {
             this.vAbsolutePosition = targetPosition;
         } else {
@@ -103,6 +103,10 @@ public class Ball extends GameObject implements DrawableObject {
         this.vDirectionAbsolute = vDirectionAbsolute;
     }
 
+    public int getAbsoluteRadius() {
+        return radius;
+    }
+
     /**
      * @return
      */
@@ -114,5 +118,12 @@ public class Ball extends GameObject implements DrawableObject {
         return ballCenter.add(uDirection.multiplyWithScalar(radius));
     }
 
-
+    @Override
+    public String toString() {
+        return "Ball{" +
+                "vDirectionAbsolute=" + vDirectionAbsolute +
+                ", vAbsolutePosition=" + vAbsolutePosition +
+                ", radius=" + radius +
+                '}';
+    }
 }

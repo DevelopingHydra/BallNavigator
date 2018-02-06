@@ -117,6 +117,10 @@ public class Line {
         this.lineSegment = lineSegment;
     }
 
+    public double getLength(){
+        return vPointB.subtract(vPointA).getLength();
+    }
+
     @Override
     public String toString() {
         return "Line{" +

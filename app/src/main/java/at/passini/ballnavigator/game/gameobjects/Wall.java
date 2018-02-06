@@ -68,7 +68,7 @@ public class Wall extends GameObject implements DrawableObject {
         return lAbsolute;
     }
 
-    public Line getlGrid() {
+    public Line getGrid() {
         return lGrid;
     }
 }
