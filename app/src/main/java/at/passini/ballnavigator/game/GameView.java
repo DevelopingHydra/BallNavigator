@@ -64,8 +64,7 @@ public class GameView extends SurfaceView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        GameManager.getInstance().setDeviceWidth(w);
-        GameManager.getInstance().setDeviceHeight(h);
+        GameManager.getInstance().setDeviceSize(w, h);
     }
 
     private void updateCanvas() {
@@ -86,6 +85,7 @@ public class GameView extends SurfaceView {
     private void startGame() {
         running = true;
         runGame();
+        GameManager.getInstance().setDeviceSize(this.getWidth(), this.getHeight());
         GameManager.getInstance().startGame();
     }
 

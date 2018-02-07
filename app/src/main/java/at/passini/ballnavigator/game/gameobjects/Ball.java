@@ -26,17 +26,41 @@ public class Ball extends GameObject implements DrawableObject {
 
         pColor = new Paint();
         pColor.setColor(Color.DKGRAY);
-        pColor.setStyle(Paint.Style.FILL);
+        pColor.setStrokeWidth(5);
+        pColor.setStyle(Paint.Style.STROKE);
     }
 
     @Override
     public void onDrawUpdate(Canvas canvas, long timePassed) {
-        float left = (float) vAbsolutePosition.getX() - radius;
-        float top = (float) vAbsolutePosition.getY() - radius;
-        float right = (float) vAbsolutePosition.getX() + 2 * radius;
-        float bottom = (float) vAbsolutePosition.getY() + 2 * radius;
+        float left = (float) (vAbsolutePosition.getX() - radius);
+        float top = (float) (vAbsolutePosition.getY() - radius);
+        float right = (float) (vAbsolutePosition.getX() + radius);
+        float bottom = (float) (vAbsolutePosition.getY() + radius);
         canvas.drawOval(left, top, right, bottom, this.pColor);
 //        Log.d("ball", "drawing at " + this.vAbsolutePosition.toString() + " with speed: " + this.vDirectionAbsolute.toString() + " and " + timePassed + " ms have passed");
+    }
+
+    @Override
+    public void onHit(Ball ball) {
+        // well :)
+    }
+
+    @Override
+    public void moveToAbsoluteLocation(Vector targetPosition) {
+        if (isAbsolutePointWithinObject(targetPosition)) {
+            this.vAbsolutePosition = targetPosition;
+        } else {
+            // first we calculate the vector from the ball center to the contactPoint
+            Vector ballCenter = this.vAbsolutePosition;
+            Vector contactPoint = this.getAbsoluteContactPoint();
+            Vector diff = ballCenter.subtract(contactPoint); // order matters!
+
+            // now we calculate the reachable position
+            Vector newPos = targetPosition.add(diff);
+
+            // now we move the ball to the location
+            this.vAbsolutePosition = newPos;
+        }
     }
 
     public boolean isAbsolutePointWithinObject(Vector vPoint) {
@@ -69,28 +93,6 @@ public class Ball extends GameObject implements DrawableObject {
         this.vDirectionAbsolute.setY(-this.vDirectionAbsolute.getY());
     }
 
-    @Override
-    public void onHit(Ball ball) {
-        // well :)
-    }
-
-    @Override
-    public void moveToAbsoluteLocation(Vector targetPosition) {
-        if (isAbsolutePointWithinObject(targetPosition)) {
-            this.vAbsolutePosition = targetPosition;
-        } else {
-            // first we calculate the vector from the ball center to the contactPoint
-            Vector ballCenter = this.vAbsolutePosition;
-            Vector contactPoint = this.getAbsoluteContactPoint();
-            Vector diff = ballCenter.subtract(contactPoint); // order matters!
-
-            // now we calculate the reachable position
-            Vector newPos = targetPosition.add(diff);
-
-            // now we move the ball to the location
-            this.vAbsolutePosition = newPos;
-        }
-    }
 
     private void setvAbsolutePosition(Vector vAbsolutePosition) {
         this.vAbsolutePosition = vAbsolutePosition;

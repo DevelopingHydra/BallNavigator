@@ -88,6 +88,14 @@ public class GameManager {
                 Vector ballNewPosition = ballRay.getPointB();
                 canvas.drawLine((float) ballPosition.getX(), (float) ballPosition.getY(), (float) ballNewPosition.getX(), (float) ballNewPosition.getY(), p);
             }
+
+            Paint fill = new Paint();
+            fill.setColor(Color.RED);
+            fill.setStyle(Paint.Style.FILL);
+            Vector cp = ball.getAbsoluteContactPoint();
+            Vector vAbsolutePosition = ball.getAbsolutePosition();
+            canvas.drawOval((float) vAbsolutePosition.getX() - 5, (float) vAbsolutePosition.getY() - 5, (float) vAbsolutePosition.getX() + 5, (float) vAbsolutePosition.getY() + 5, fill);
+            canvas.drawOval((float) cp.getX() - 5, (float) cp.getY() - 5, (float) cp.getX() + 5, (float) cp.getY() + 5, fill);
         }
 
 //        Log.d("gm","num drawing lines: "+this.drawingLines.size());
@@ -201,7 +209,8 @@ public class GameManager {
                 // no collision --> the ball can move as he wants to so we move it
                 Vector ballPosition = ball.getAbsoluteContactPoint();
                 Vector ballNewPosition = reachablePointWithinTime(ballPosition, ball.getAbsoluteDirectionVector(), timeRemaining);
-                moveGameObjectToLocation(ball, ballNewPosition, timeRemaining, ball.getAbsoluteDirectionVector());
+//                moveGameObjectToLocation(ball, ballNewPosition, timeRemaining, ball.getAbsoluteDirectionVector());
+                ball.moveToAbsoluteLocation(ballNewPosition);
                 timeRemaining = 0;
             } else {
 //                Log.d("gm", "colliding with num elements: " + collisionPoints.size());
@@ -211,6 +220,16 @@ public class GameManager {
                     Vector intersectionPoint = collisionEntry.getValue();
                     // there was an intersection
                     gameObject.onHit(ball);
+
+
+                    // todo remove safety distance and fix the calculation
+                    Vector ballCenter = ball.getAbsolutePosition();
+                    Vector contactPoint = ball.getAbsoluteContactPoint();
+                    Vector diff = ballCenter.subtract(contactPoint);
+                    diff.setLength(diff.getLength()*1.1);
+                    newBallPositionAfterCollision = newBallPositionAfterCollision.add(diff);
+
+
                     // now return the time it took to move the ball there
                     double timeToMove = moveGameObjectToLocation(ball, newBallPositionAfterCollision, timeRemaining, ball.getAbsoluteDirectionVector());
 
@@ -237,7 +256,7 @@ public class GameManager {
                     // todo !!!
                     Log.e("gm", "ahhhhhhh");
                     timeRemaining = 0;
-                    ball.moveToAbsoluteLocation(getAbsoluteLocation(new Vector(50,50)));
+                    ball.moveToAbsoluteLocation(getAbsoluteLocation(new Vector(50, 50)));
                 }
 
             }
@@ -249,6 +268,7 @@ public class GameManager {
             } else {
                 // otherwise update the time remaining to move
                 ballsThatCanStillMove.put(ball, timeRemaining);
+                Log.d("gm","call CD again with timeRemaining: "+timeRemaining);
             }
         }
 
@@ -357,7 +377,7 @@ public class GameManager {
         double timeNeeded = timeNeededToMoveDistance(distanceToTarget, vSpeedToMove);
 
         // now check if we have more time than we need
-        if (timeAvailable > timeNeeded) {
+        if (timeAvailable >= timeNeeded) {
             // we have enough time to move to the target
             // now move to the target
             vPointToMoveTo = vPointTarget;
@@ -389,8 +409,6 @@ public class GameManager {
     }
 
     /**
-     * todo please fix the calculation of speed
-     *
      * @param distanceToTravel
      * @param vSpeed
      * @return
@@ -403,8 +421,6 @@ public class GameManager {
     }
 
     /**
-     * todo please fix calculation of speed
-     *
      * @param timeToTravel
      * @param vSpeed
      * @return
@@ -485,7 +501,7 @@ public class GameManager {
     }
 
     public Rect getAbsoluteRect(int gridX, int gridY, int gridRight, int gridBottom) {
-        return new Rect((int)(displayUnitX * gridX),(int)( displayUnitY * gridY),(int)( displayUnitX * gridRight),(int)( displayUnitY * gridBottom));
+        return new Rect((int) (displayUnitX * gridX), (int) (displayUnitY * gridY), (int) (displayUnitX * gridRight), (int) (displayUnitY * gridBottom));
     }
 
     public Rect getAbsoluteRect(Rect rGrid) {
@@ -497,10 +513,10 @@ public class GameManager {
      */
     private void onResizeEverything() {
         // first of all update the displayUnits
-        this.displayUnitX = this.deviceWidth / this.gridColumns;
-        this.displayUnitY = this.deviceHeight / this.gridRows;
+        this.displayUnitX = (float) this.deviceWidth / this.gridColumns;
+        this.displayUnitY = (float) this.deviceHeight / this.gridRows;
 
-        for(GameObject gameObject:this.gameElements){
+        for (GameObject gameObject : this.gameElements) {
             gameObject.resizeAbsolute();
         }
     }
@@ -511,6 +527,12 @@ public class GameManager {
     }
 
     public void setDeviceHeight(int deviceHeight) {
+        this.deviceHeight = deviceHeight;
+        onResizeEverything();
+    }
+
+    public void setDeviceSize(int deviceWidth, int deviceHeight) {
+        this.deviceWidth = deviceWidth;
         this.deviceHeight = deviceHeight;
         onResizeEverything();
     }
