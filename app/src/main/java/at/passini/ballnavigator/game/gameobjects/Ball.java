@@ -103,6 +103,13 @@ public class Ball extends GameObject implements DrawableObject {
     }
 
     @Override
+    public boolean isAbsolutePointInside(Vector vPoint) {
+        Vector ballCenterToPointOnRadius = getAbsoluteContactPoint().subtract(this.vAbsolutePosition);
+        Vector ballCenterToTargetPoint = vPoint.subtract(this.vAbsolutePosition);
+        return ballCenterToTargetPoint.getLength() <= ballCenterToPointOnRadius.getLength();
+    }
+
+    @Override
     public void resizeAbsolute() {
         // todo
     }

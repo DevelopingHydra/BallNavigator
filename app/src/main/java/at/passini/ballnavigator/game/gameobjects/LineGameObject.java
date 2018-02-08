@@ -58,6 +58,11 @@ public abstract class LineGameObject extends GameObject {
         return this.lAbsolute.getPointA().add(this.lAbsolute.getPointB()).devideByScalar(.5);
     }
 
+    @Override
+    public boolean isAbsolutePointInside(Vector vPoint) {
+        return false; // todo
+    }
+
     public void setAbsolutePointA(Vector pointA) {
         this.lAbsolute.setPointA(pointA);
         this.lGrid.setPointA(GameManager.getInstance().getGridLocation(pointA));

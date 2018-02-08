@@ -19,6 +19,7 @@ import at.passini.ballnavigator.game.Helper.Vector;
 import at.passini.ballnavigator.game.gameobjects.Ball;
 import at.passini.ballnavigator.game.gameobjects.DrawingLine;
 import at.passini.ballnavigator.game.gameobjects.GameObject;
+import at.passini.ballnavigator.game.gameobjects.NonDrawableArea;
 import at.passini.ballnavigator.game.gameobjects.RectGameObject;
 import at.passini.ballnavigator.game.gameobjects.Wall;
 
@@ -36,7 +37,6 @@ public class GameManager {
     private ConcurrentLinkedQueue<GameObject> gameElements;
     private ConcurrentLinkedQueue<Ball> balls;
 
-    //    private ConcurrentLinkedQueue<DrawingLine> drawingLines;
     private DrawingLine currentDrawingLine;
     private boolean isCurrentlyDrawing;
 
@@ -97,11 +97,6 @@ public class GameManager {
             canvas.drawOval((float) vAbsolutePosition.getX() - 5, (float) vAbsolutePosition.getY() - 5, (float) vAbsolutePosition.getX() + 5, (float) vAbsolutePosition.getY() + 5, fill);
             canvas.drawOval((float) cp.getX() - 5, (float) cp.getY() - 5, (float) cp.getX() + 5, (float) cp.getY() + 5, fill);
         }
-
-//        Log.d("gm","num drawing lines: "+this.drawingLines.size());
-//        for (DrawingLine lines : drawingLines) {
-//            lines.onDrawUpdate(canvas, timePassed);
-//        }
     }
 
     /* start game */
@@ -113,6 +108,8 @@ public class GameManager {
 //        this.drawingLines.clear();
 
         // todo Map.getGameObjects
+
+        this.gameElements.add(new NonDrawableArea(0, 0, 30, 30));
 
         // add the walls to the gameObject list
         Wall left = new Wall(0, 0, 0, gridRows);
@@ -163,50 +160,52 @@ public class GameManager {
 
             for (Line ballRay : ballRays) {
                 for (GameObject gameObject : this.gameElements) {
+                    if (gameObject.isCollidable()) {
 //                    double timeToMove = 0;
-                    Vector currIntersectionPoint = null;
-                    if (gameObject instanceof RectGameObject) {
-                        RectGameObject rectGameObject = (RectGameObject) gameObject;
-                        currIntersectionPoint = collisionDetectionRect(timeRemaining, rectGameObject.getAbsoluteRectangle(), gameObject, ballRay, ball);
-                    } else if (gameObject instanceof Wall) {
-                        Wall wall = (Wall) gameObject;
-                        currIntersectionPoint = collisionDetectionLine(timeRemaining, wall.getAbsolute(), gameObject, ballRay, ball);
-                    } else if (gameObject instanceof DrawingLine) {
-                        DrawingLine drawingLine = (DrawingLine) gameObject;
-                        currIntersectionPoint = collisionDetectionDrawingLine(timeRemaining, drawingLine, ballRay, ball);
-                    }
-                    // now check if there was a collision
-                    if (currIntersectionPoint != null && currIntersectionPoint.getX() < Double.MAX_VALUE && currIntersectionPoint.getY() < Double.MAX_VALUE) {
-                        boolean useThisCollisionPoint = true;
+                        Vector currIntersectionPoint = null;
+                        if (gameObject instanceof RectGameObject) {
+                            RectGameObject rectGameObject = (RectGameObject) gameObject;
+                            currIntersectionPoint = collisionDetectionRect(timeRemaining, rectGameObject.getAbsoluteRectangle(), gameObject, ballRay, ball);
+                        } else if (gameObject instanceof Wall) {
+                            Wall wall = (Wall) gameObject;
+                            currIntersectionPoint = collisionDetectionLine(timeRemaining, wall.getAbsolute(), gameObject, ballRay, ball);
+                        } else if (gameObject instanceof DrawingLine) {
+                            DrawingLine drawingLine = (DrawingLine) gameObject;
+                            currIntersectionPoint = collisionDetectionDrawingLine(timeRemaining, drawingLine, ballRay, ball);
+                        }
+                        // now check if there was a collision
+                        if (currIntersectionPoint != null && currIntersectionPoint.getX() < Double.MAX_VALUE && currIntersectionPoint.getY() < Double.MAX_VALUE) {
+                            boolean useThisCollisionPoint = true;
 
 //                        if (collisionPoints.get(gameObject) != null) {
-                        if (intersectionPoint != null) {
+                            if (intersectionPoint != null) {
 //                            Vector otherCollisionPoint = collisionPoints.get(gameObject);
-                            Vector otherCollisionPoint = intersectionPoint;
-                            // check lengths
-                            Vector oldCollisionPointToBallDistance = otherCollisionPoint.subtract(ball.getAbsolutePosition());
-                            Vector newCollisionPointToBallDistance = currIntersectionPoint.subtract(ball.getAbsolutePosition());
-                            if (oldCollisionPointToBallDistance.getLength() < newCollisionPointToBallDistance.getLength()) {
-                                useThisCollisionPoint = false;
+                                Vector otherCollisionPoint = intersectionPoint;
+                                // check lengths
+                                Vector oldCollisionPointToBallDistance = otherCollisionPoint.subtract(ball.getAbsolutePosition());
+                                Vector newCollisionPointToBallDistance = currIntersectionPoint.subtract(ball.getAbsolutePosition());
+                                if (oldCollisionPointToBallDistance.getLength() < newCollisionPointToBallDistance.getLength()) {
+                                    useThisCollisionPoint = false;
+                                }
                             }
-                        }
 
-                        if (useThisCollisionPoint) {
-                            // we only move the ball with its center --> that means we only set the collision point as the point where to move the ball to
-                            // so we have to calculate the position to which the ball can move his center
+                            if (useThisCollisionPoint) {
+                                // we only move the ball with its center --> that means we only set the collision point as the point where to move the ball to
+                                // so we have to calculate the position to which the ball can move his center
 
-                            // we project the vector (ballContactPoint -> intersectionPoint) to the ballRayCenter
+                                // we project the vector (ballContactPoint -> intersectionPoint) to the ballRayCenter
 
-                            Vector ballPosition = ball.getAbsoluteContactPoint();
-                            Vector projectionVector = currIntersectionPoint.subtract(ballPosition);
-                            Vector ballNewPosition = reachablePointWithinTime(ballPosition, ball.getAbsoluteDirectionVector(), timeRemaining);
-                            Vector ballRayVector = ballNewPosition.subtract(ballPosition);
+                                Vector ballPosition = ball.getAbsoluteContactPoint();
+                                Vector projectionVector = currIntersectionPoint.subtract(ballPosition);
+                                Vector ballNewPosition = reachablePointWithinTime(ballPosition, ball.getAbsoluteDirectionVector(), timeRemaining);
+                                Vector ballRayVector = ballNewPosition.subtract(ballPosition);
 
-                            Vector newDirection = projectionVector.projectOnto(ballRayVector);
-                            newBallPositionAfterCollision = ballPosition.add(newDirection);
+                                Vector newDirection = projectionVector.projectOnto(ballRayVector);
+                                newBallPositionAfterCollision = ballPosition.add(newDirection);
 //                            collisionPoints.put(gameObject, currIntersectionPoint);
-                            gameObjectBallCollidedWith = gameObject;
-                            intersectionPoint = currIntersectionPoint;
+                                gameObjectBallCollidedWith = gameObject;
+                                intersectionPoint = currIntersectionPoint;
+                            }
                         }
                     }
                 }
@@ -377,15 +376,6 @@ public class GameManager {
             vPointToMoveTo = reachablePointWithinTime(vPointGameObjectPosition, vSpeedToMove, timeAvailable);
         }
 
-        // now move the ball
-//        if (gameObject instanceof Ball) {
-//            Ball ball = (Ball) gameObject;
-//            ball.moveToAbsolutePosition(vPointToMoveTo);
-//        } else if (gameObject instanceof RectGameObject) {
-//            RectGameObject rectGameObject = (RectGameObject) gameObject;
-//            rectGameObject.setAbsoluteX((int) vPointToMoveTo.getX());
-//            rectGameObject.setAbsoluteY((int) vPointToMoveTo.getY());
-//        }
         gameObject.moveToAbsoluteLocation(vPointToMoveTo);
 
         return timeNeeded;
@@ -436,24 +426,41 @@ public class GameManager {
 
     public void startSwipe(float touchX, float touchY, long timePassed) {
         DrawingLine local = new DrawingLine(timePassed);
-        local.addPosition(new Vector(touchX, touchY));
+//        local.addPosition(new Vector(touchX, touchY));
 
         this.gameElements.add(local);
         currentDrawingLine = local;
         this.isCurrentlyDrawing = true;
+        addPointToDrawingLine(new Vector(touchX, touchY));
     }
 
     public void onSwipeMove(float touchX, float touchY, long timePassed) {
-        if (this.isCurrentlyDrawing) {
-            this.currentDrawingLine.addPosition(new Vector(touchX, touchY));
-        }
+//        if (this.isCurrentlyDrawing) {
+//            this.currentDrawingLine.addPosition(new Vector(touchX, touchY));
+//        }
+        addPointToDrawingLine(new Vector(touchX, touchY));
     }
 
     public void stopSwipe(float touchX, float touchY, long timePassed) {
-        if (this.currentDrawingLine != null) {
-            this.currentDrawingLine.addPosition(new Vector(touchX, touchY));
-        }
+//        if (this.currentDrawingLine != null) {
+//            this.currentDrawingLine.addPosition(new Vector(touchX, touchY));
+        addPointToDrawingLine(new Vector(touchX, touchY));
+//        }
         this.isCurrentlyDrawing = false;
+    }
+
+    private void addPointToDrawingLine(Vector vPoint) {
+        if (this.isCurrentlyDrawing) {
+            for (GameObject gameObject : this.gameElements) {
+                if (gameObject instanceof NonDrawableArea) {
+                    if (!gameObject.isAbsolutePointInside(vPoint)) {
+                        this.currentDrawingLine.addPosition(new Vector(vPoint.getX(), vPoint.getY()));
+                    } else {
+                        this.isCurrentlyDrawing = false;
+                    }
+                }
+            }
+        }
     }
 
     /* grid handling */
