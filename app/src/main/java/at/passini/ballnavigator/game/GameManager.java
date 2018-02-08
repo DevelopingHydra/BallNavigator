@@ -554,5 +554,11 @@ public class GameManager {
         this.balls.add(ball);
     }
 
+    public int getGridColumns() {
+        return gridColumns;
+    }
 
+    public int getGridRows() {
+        return gridRows;
+    }
 }
