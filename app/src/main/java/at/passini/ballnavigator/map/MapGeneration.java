@@ -1,9 +1,13 @@
 package at.passini.ballnavigator.map;
 
+import android.util.Log;
+
 import java.util.ArrayList;
+import java.util.Random;
 
 import at.passini.ballnavigator.game.GameManager;
 import at.passini.ballnavigator.map.MapPart.MapPartGemInBricks;
+import at.passini.ballnavigator.map.MapPart.MapPartWalls;
 
 /**
  * Created by Benedikt on 08.02.2018.
@@ -18,6 +22,7 @@ public class MapGeneration {
     private final int gridColumns;
 
     private String seed;
+    private Random rand = new Random();
 
     private MapGeneration() throws Exception {
         gridRows = GameManager.getInstance().getGridRows();
@@ -45,13 +50,23 @@ public class MapGeneration {
 
     }
 
-    private void findFirstPart(){
 
+
+    private MapSegment findFirstPart(){
+        ArrayList<MapSegment> filteredSegments = new ArrayList<>();
+        for (MapSegment segment : mapSegments) {
+            if (segment.isOpenRight() || segment.isOpenBottom()) {
+                filteredSegments.add(segment);
+            }
+        }
+        Log.d("GameElements",filteredSegments.toString());
+        return filteredSegments.get(rand.nextInt(filteredSegments.size()));
     }
 
-    public Map generateNewMap(int difficulty) {
+    public Map generateNewMap(int difficulty) throws Exception {
         Map map =new Map();
-
+        map.addSegment(new MapPartWalls());
+        map.addSegment(findFirstPart());
 
         
         return map;

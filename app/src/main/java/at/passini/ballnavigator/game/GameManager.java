@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -43,6 +42,8 @@ public class GameManager {
     private boolean isCurrentlyDrawing;
 
     private static GameManager instance;
+
+    private NonDrawableArea ballNonDrawAbleArea;
 
     private GameManager() {
         this.deviceHeight = 0;
@@ -115,18 +116,15 @@ public class GameManager {
         try {
             Map map = MapGeneration.getINSTANCE().generateNewMap(1);
             this.gameElements=map.getGameObjects();
-
+            Log.d("GameElements","GameElementcount: "+gameElements.size());
         }catch (Exception e){
-            //TODO^^
+            Log.d("GameElements",e.getMessage());
+            //TODO print error!
         }
-
-        // add the walls to the gameObject list
-
-
-        Wall testWall = new Wall(70, 10, 30, 60);
-
         // before map works set up ball statically
-        balls.add(new Ball(getAbsoluteLocation(new Vector(5, 2)), new Vector(-1, -.5)));
+        ballNonDrawAbleArea=new NonDrawableArea(0,0,0,0);
+        gameElements.add(ballNonDrawAbleArea);
+        balls.add(new Ball(getAbsoluteLocation(new Vector(5, 2)), new Vector(-1, -.5),ballNonDrawAbleArea));
     }
 
     /* collision detection */

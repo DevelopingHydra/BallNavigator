@@ -6,10 +6,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import at.passini.ballnavigator.game.GameManager;
 import at.passini.ballnavigator.game.gameobjects.GameObject;
 import at.passini.ballnavigator.game.gameobjects.RectGameObject;
-import at.passini.ballnavigator.game.gameobjects.Wall;
 
 /**
  * Created by Benedikt on 08.02.2018.
@@ -32,26 +30,11 @@ public class Map implements Iterable<MapSegment>{
                     rco.setGridRight(rco.getGridRight()+segment.getGridColumns());
                     rco.setGridBottom(rco.getGridBottom()+segment.getGridRows());
                 }else{
-                    gameObjects.add(gameObjectInSegment);
-                }
 
+                }
+                gameObjects.add(gameObjectInSegment);
             }
         }
-
-        int gridRows = GameManager.getInstance().getGridRows();
-        int gridColumns = GameManager.getInstance().getGridColumns();
-
-        //Add wall on the side
-        Wall left = new Wall(0, 0, 0, gridRows);
-        Wall top = new Wall(0, 0, gridColumns, 0);
-        Wall right = new Wall(gridColumns, 0, gridColumns, gridRows);
-        Wall bottom = new Wall(0, gridRows, gridColumns, gridRows);
-
-        gameObjects.add(left);
-        gameObjects.add(right);
-        gameObjects.add(top);
-        gameObjects.add(bottom);
-
         return gameObjects;
     }
 

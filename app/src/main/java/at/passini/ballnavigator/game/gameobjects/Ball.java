@@ -17,9 +17,11 @@ public class Ball extends GameObject implements DrawableObject {
     private int radius;
 
     private Paint pColor;
+    private NonDrawableArea ballNonDrawAbleArea;
 
-    public Ball(Vector vPosition, Vector vDirectionAbsolute) {
+    public Ball(Vector vPosition, Vector vDirectionAbsolute, NonDrawableArea ballNonDrawAbleArea) {
         this.vDirectionAbsolute = vDirectionAbsolute;
+        this.ballNonDrawAbleArea=ballNonDrawAbleArea;
 
         radius = 20;// absolute value! should be called before setting the absolutePosition()
         this.vAbsolutePosition = vPosition;
@@ -60,6 +62,11 @@ public class Ball extends GameObject implements DrawableObject {
 
             // now we move the ball to the location
             this.vAbsolutePosition = newPos;
+
+            ballNonDrawAbleArea.setAbsoluteX(newPos.getX()-2*radius);
+            ballNonDrawAbleArea.setAbsoluteY(newPos.getY()-2*radius);
+            ballNonDrawAbleArea.setAbsoluteRight(newPos.getX()+2*radius);
+            ballNonDrawAbleArea.setAbsoluteBottom(newPos.getY()+2*radius);
         }
     }
 

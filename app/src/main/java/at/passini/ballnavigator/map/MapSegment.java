@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import at.passini.ballnavigator.game.Helper.Vector;
 import at.passini.ballnavigator.game.gameobjects.GameObject;
 import at.passini.ballnavigator.game.gameobjects.Gem;
 
@@ -89,5 +90,6 @@ public abstract class MapSegment implements Iterable<GameObject>{
     public abstract boolean isOpenLeft();
     public abstract boolean isOpenRight();
     public abstract boolean isSingleUse();
-
+    public abstract boolean canSpawnBall();
+    public abstract Vector[] ballPositions();
 }
