@@ -21,6 +21,8 @@ import at.passini.ballnavigator.game.gameobjects.DrawingLine;
 import at.passini.ballnavigator.game.gameobjects.GameObject;
 import at.passini.ballnavigator.game.gameobjects.RectGameObject;
 import at.passini.ballnavigator.game.gameobjects.Wall;
+import at.passini.ballnavigator.map.Map;
+import at.passini.ballnavigator.map.MapGeneration;
 
 /**
  * Manages the grid and location of the gameobjects
@@ -114,18 +116,18 @@ public class GameManager {
 
         // todo Map.getGameObjects
 
+        try {
+            Map map = MapGeneration.getINSTANCE().generateNewMap(1);
+            this.gameElements=map.getGameObjects();
+
+        }catch (Exception e){
+            //TODO^^
+        }
+
         // add the walls to the gameObject list
-        Wall left = new Wall(0, 0, 0, gridRows);
-        Wall top = new Wall(0, 0, gridColumns, 0);
-        Wall right = new Wall(gridColumns, 0, gridColumns, gridRows);
-        Wall bottom = new Wall(0, gridRows, gridColumns, gridRows);
+
 
         Wall testWall = new Wall(70, 10, 30, 60);
-        this.gameElements.add(left);
-        this.gameElements.add(right);
-        this.gameElements.add(top);
-        this.gameElements.add(bottom);
-        this.gameElements.add(testWall);
 
         // before map works set up ball statically
         balls.add(new Ball(getAbsoluteLocation(new Vector(5, 10)), new Vector(1, 1.5)));

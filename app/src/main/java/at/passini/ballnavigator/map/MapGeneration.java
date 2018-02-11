@@ -45,14 +45,24 @@ public class MapGeneration {
 
     }
 
+    private void findFirstPart(){
+
+    }
+
     public Map generateNewMap(int difficulty) {
         Map map =new Map();
 
-        int defaultCountRowSegment = gridRows/3;
-        int findCountColumsSegment = gridColumns/3;
 
         
         return map;
+    }
+
+    public int getGridRows() {
+        return gridRows;
+    }
+
+    public int getGridColumns() {
+        return gridColumns;
     }
 
     public String getSeed() {

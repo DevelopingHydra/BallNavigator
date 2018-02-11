@@ -1,6 +1,9 @@
 package at.passini.ballnavigator.map;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import at.passini.ballnavigator.game.gameobjects.GameObject;
 import at.passini.ballnavigator.game.gameobjects.Gem;
@@ -9,7 +12,7 @@ import at.passini.ballnavigator.game.gameobjects.Gem;
  * Created by Benedikt on 08.02.2018.
  */
 
-public abstract class MapSegment {
+public abstract class MapSegment implements Iterable<GameObject>{
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
 
     private int gridRows;
@@ -49,6 +52,8 @@ public abstract class MapSegment {
         return false;
     }
 
+
+
     public int getGridRows() {
         return gridRows;
     }
@@ -63,6 +68,20 @@ public abstract class MapSegment {
 
     public MapTheme getTheme() {
         return theme;
+    }
+
+    public void setGridRows(int gridRows) {
+        this.gridRows = gridRows;
+    }
+
+    public void setGridColumns(int gridColumns) {
+        this.gridColumns = gridColumns;
+    }
+
+    @NonNull
+    @Override
+    public Iterator<GameObject> iterator() {
+        return gameObjects.iterator();
     }
 
     public abstract boolean isOpenTop();
