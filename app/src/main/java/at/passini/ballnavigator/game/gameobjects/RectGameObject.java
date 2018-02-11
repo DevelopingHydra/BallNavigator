@@ -67,9 +67,18 @@ public abstract class RectGameObject extends GameObject {
     public Vector getAbsolutePosition() {
         return new Vector(this.rBoxAbsolute.centerX(), this.rBoxAbsolute.centerY());
     }
+
     @Override
     public void onDrawUpdate(Canvas canvas, long timePassed) {
         canvas.drawRect(this.rBoxAbsolute, pColor);
+    }
+
+    @Override
+    public boolean isAbsolutePointInside(Vector vPoint) {
+        double targetX = vPoint.getX();
+        double targetY = vPoint.getY();
+        return targetX >= this.rBoxAbsolute.left && targetX <= this.rBoxAbsolute.right
+                && targetY <= this.rBoxAbsolute.bottom && targetY >= this.rBoxAbsolute.top;
     }
 
     public boolean isAbsolutePointWithinObject(Vector vPoint) {

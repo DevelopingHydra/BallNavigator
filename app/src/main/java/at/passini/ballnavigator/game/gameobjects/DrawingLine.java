@@ -82,6 +82,11 @@ public class DrawingLine extends GameObject implements DrawableObject {
     public void resizeAbsolute() {
         // todo
     }
+
+    @Override
+    public boolean isAbsolutePointInside(Vector vPoint) {
+        return false; // todo
+    }
 }
 
 class LinePoint extends Vector {
